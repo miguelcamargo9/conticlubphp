@@ -66,5 +66,5 @@ class User extends Authenticatable {
   public function wishLists() {
     return $this->hasMany('App\WishList', 'users_id');
   }
-
+  
 }

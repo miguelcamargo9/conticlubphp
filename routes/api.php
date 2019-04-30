@@ -19,6 +19,9 @@ Route::group(['middleware'=>['auth:api']], function() {
   Route::get("perro", 'API\TestController@teOdio');
   Route::get("allCities", 'API\CitiesController@AllCities');
   Route::get("allProfiles", 'API\ProfilesController@AllProfiles');
+  //CRUD PARA LOS USUARIOS
+  Route::get("users/allUsers", 'API\UsersController@allUsers');
+  Route::post("users/create", 'API\UsersController@create');
 });
 
 
