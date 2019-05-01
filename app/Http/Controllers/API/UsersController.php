@@ -17,10 +17,11 @@ class UsersController extends BaseController {
       ValidatesRequests;
   
   public function allUsers(){  
-    $users = User::all();
-    return$users;
+    $users = User::with("profile")->with("city")->get();
+    return $users;
   }
 
+  //CREAR UN NUEVO USUARIO
   public function create(Request $r) {
     $userR=json_decode($r->getContent(), true);
     $myUser = new User();
@@ -28,7 +29,24 @@ class UsersController extends BaseController {
       $value = ($column=="password")?bcrypt($value):$value;
       $myUser->$column = $value;
     }
-    return( $myUser->save())?"ok":"error";
+    return( $myUser->save())?["message"=>"success"]:["message"=>"error"];
+  }
+  
+  ///OBTENER UN USUARIO EXISTENTE
+  public function getUser($id) {
+    $user = User::with("profile")->with("city")->find($id);
+    return $user;
+  }
+  
+  //ACTIALIZAR UN USUARIO
+  public function update($id,Request $r) {
+    $userR=json_decode($r->getContent(), true);
+    $user = User::find($id);
+    foreach ($userR as $column => $value) {
+      $value = ($column=="password")?bcrypt($value):$value;
+      $user->$column = $value;
+    }
+    return( $user->update())?["message"=>"success"]:["message"=>"error"];
   }
 }
 

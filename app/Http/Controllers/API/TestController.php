@@ -13,8 +13,8 @@ class TestController extends BaseController {
       DispatchesJobs,
       ValidatesRequests;
 
-  public function teOdio() {
-    return "andres";
+  public function dog() {
+    return "GUAU!!!";
   }
 
 }

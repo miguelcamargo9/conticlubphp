@@ -16,13 +16,16 @@ Route::post('login', 'API\AccessTokenController@issueToken');
 
 //RUTAS PARA EL ADMINISTRADOR
 Route::group(['middleware'=>['auth:api']], function() {
-  Route::get("perro", 'API\TestController@teOdio');
-  Route::get("allCities", 'API\CitiesController@AllCities');
-  Route::get("allProfiles", 'API\ProfilesController@AllProfiles');
+  Route::get("perro", 'API\TestController@dog');
+  Route::get("allcities", 'API\CitiesController@allCities');
+  Route::get("allprofiles", 'API\ProfilesController@allProfiles');
   //CRUD PARA LOS USUARIOS
-  Route::get("users/allUsers", 'API\UsersController@allUsers');
+  Route::get("users/allusers", 'API\UsersController@allUsers');
   Route::post("users/create", 'API\UsersController@create');
+  Route::get("users/getuser/{id}", 'API\UsersController@getUser');
+  Route::post("users/update/{id}", 'API\UsersController@update');
 });
+
 
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {

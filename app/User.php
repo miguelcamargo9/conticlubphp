@@ -43,7 +43,7 @@ class User extends Authenticatable {
    * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
    */
   public function city() {
-    return $this->belongsTo('App\City', 'cities_id');
+    return $this->belongsTo('App\Cities', 'cities_id');
   }
 
   /**

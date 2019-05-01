@@ -14,7 +14,7 @@ class ProfilesController extends BaseController {
   use AuthorizesRequests,
       ValidatesRequests;
 
-  public function AllProfiles() {
+  public function allProfiles() {
     $profiles = Profiles::all();
     return $profiles;
   }

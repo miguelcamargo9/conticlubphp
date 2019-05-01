@@ -14,7 +14,7 @@ class CitiesController extends BaseController {
   use AuthorizesRequests,
       ValidatesRequests;
 
-  public function AllCities() {
+  public function allCities() {
     $cities = Cities::all();
     return $cities;
   }
