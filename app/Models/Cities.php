@@ -19,8 +19,8 @@ class Cities extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function users()
+    public function subsidiary()
     {
-        return $this->hasMany('App\User', 'cities_id');
+        return $this->hasMany('App\Subsidiary', 'subsidiary_id');
     }
 }

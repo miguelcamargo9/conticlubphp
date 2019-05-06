@@ -34,7 +34,7 @@ class Product extends Model
      */
     public function productCategory()
     {
-        return $this->belongsTo('App\ProductCategory', 'product_categories_id');
+        return $this->belongsTo('App\ProductCategories', 'product_categories_id');
     }
 
     /**
@@ -42,7 +42,7 @@ class Product extends Model
      */
     public function productImages()
     {
-        return $this->hasMany('App\ProductImage');
+        return $this->hasMany('App\ProductImages');
     }
 
     /**

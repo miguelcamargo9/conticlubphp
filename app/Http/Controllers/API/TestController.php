@@ -14,7 +14,8 @@ class TestController extends BaseController {
       ValidatesRequests;
 
   public function dog() {
-    return "GUAU!!!";
+    echo bcrypt("1234");
+    //return "GUAU!!!";
   }
 
 }

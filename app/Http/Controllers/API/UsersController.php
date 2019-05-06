@@ -16,8 +16,8 @@ class UsersController extends BaseController {
   use AuthorizesRequests,
       ValidatesRequests;
   
-  public function allUsers(){  
-    $users = User::with("profile")->with("city")->get();
+  public function all(){  
+    $users = User::with("profile")->with("subsidiary")->get();
     return $users;
   }
 
@@ -33,8 +33,8 @@ class UsersController extends BaseController {
   }
   
   ///OBTENER UN USUARIO EXISTENTE
-  public function getUser($id) {
-    $user = User::with("profile")->with("city")->find($id);
+  public function get($id) {
+    $user = User::with("profile")->with("subsidiary")->find($id);
     return $user;
   }
   
