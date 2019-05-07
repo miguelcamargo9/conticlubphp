@@ -43,7 +43,7 @@ class User extends Authenticatable {
    * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
    */
   public function subsidiary() {
-    return $this->belongsTo('App\Subsidiary', 'subsidiary_id');
+    return $this->belongsTo('App\Models\Subsidiaries', 'subsidiary_id');
   }
 
   /**

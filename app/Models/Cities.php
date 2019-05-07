@@ -9,18 +9,18 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $name
  * @property User[] $users
  */
-class Cities extends Model
-{
-    /**
-     * @var array
-     */
-    protected $fillable = ['name'];
+class Cities extends Model {
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function subsidiary()
-    {
-        return $this->hasMany('App\Subsidiary', 'subsidiary_id');
-    }
+  /**
+   * @var array
+   */
+  protected $fillable = ['name'];
+
+  /**
+   * @return \Illuminate\Database\Eloquent\Relations\HasMany
+   */
+  public function subsidiary() {
+    return $this->hasMany('App\Subsidiary', 'subsidiary_id');
+  }
+
 }

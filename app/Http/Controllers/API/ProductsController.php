@@ -3,15 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 //MODELOS
 use App\Product;
 use App\ProductImages;
 
-class ProductsController {
+class ProductsController extends BaseController {
 
   public function all() {
     $producs = Product::with("productCategory")->with("ProductImages")->get();
@@ -58,9 +56,15 @@ class ProductsController {
       }
     
     }
-    echo "algo paso";
+    return ["message"=>"success"];
     //$nombre = $documento->getClientOriginalName();
     //$documento->move("$idCaso/$idRegistro", "$nombre");
+  }
+  
+   ///OBTENER UN PRODUCTO EXISTENTE
+  public function get($id) {
+    $product = Product::with("productCategory")->with("ProductImages")->find($id);
+    return $product;
   }
 
 }

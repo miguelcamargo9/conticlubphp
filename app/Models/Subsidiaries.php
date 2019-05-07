@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,10 +10,12 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $name
  * @property string $address
  * @property string $type
+ * @property string $updated_at
+ * @property string $created_at
  * @property City $city
  * @property User[] $users
  */
-class Subsidiary extends Model
+class Subsidiaries extends Model
 {
     /**
      * The table associated with the model.
@@ -25,7 +27,7 @@ class Subsidiary extends Model
     /**
      * @var array
      */
-    protected $fillable = ['cities_id', 'name', 'address', 'type'];
+    protected $fillable = ['cities_id', 'name', 'address', 'type', 'updated_at', 'created_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

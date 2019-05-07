@@ -17,7 +17,6 @@ Route::get("perro", 'API\TestController@dog');
 //RUTAS PARA EL ADMINISTRADOR
 Route::group(['middleware'=>['auth:api']], function() {
   
-  Route::get("allcities", 'API\CitiesController@allCities');
   Route::get("allprofiles", 'API\ProfilesController@allProfiles');
   //CRUD PARA LOS USUARIOS
   Route::get("users/all", 'API\UsersController@all');
@@ -31,6 +30,19 @@ Route::group(['middleware'=>['auth:api']], function() {
   Route::get("producs/get/{id}", 'API\ProductsController@get');
   Route::post("producs/update/{id}", 'API\ProductsController@update');
   
+  //CIUDADES
+  Route::get("cities/all", 'API\CitiesController@all');
+  Route::post("cities/create", 'API\CitiesController@create');
+  Route::get("cities/get/{id}", 'API\CitiesController@get');
+  Route::post("cities/update/{id}", 'API\CitiesController@update');
+  
+  
+  //SUCURSALES
+  Route::get("subsidiary/all", 'API\SubsidiariesController@all');
+  Route::post("subsidiary/create", 'API\SubsidiariesController@create');
+  Route::get("subsidiary/get/{id}", 'API\SubsidiariesController@get');
+  Route::post("subsidiary/update/{id}", 'API\SubsidiariesController@update');
+  Route::post("subsidiary/delete/{id}", 'API\SubsidiariesController@delete');
 });
 
 
