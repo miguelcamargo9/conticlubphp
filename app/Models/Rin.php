@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property int $design_id
  * @property string $name
+ * @property string $updated_at
+ * @property string $created_at
  * @property Design $design
  * @property InvoiceReference[] $invoiceReferences
  */
@@ -23,7 +25,7 @@ class Rin extends Model
     /**
      * @var array
      */
-    protected $fillable = ['name'];
+    protected $fillable = ['design_id', 'name', 'updated_at', 'created_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $brand_id
  * @property string $name
  * @property string $image
+ * @property string $updated_at
+ * @property string $created_at
  * @property Brand $brand
  * @property Rin[] $rins
  */
@@ -24,7 +26,7 @@ class Design extends Model
     /**
      * @var array
      */
-    protected $fillable = ['name', 'image'];
+    protected $fillable = ['brand_id', 'name', 'image', 'updated_at', 'created_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

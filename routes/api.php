@@ -43,6 +43,21 @@ Route::group(['middleware'=>['auth:api']], function() {
   Route::get("subsidiary/get/{id}", 'API\SubsidiariesController@get');
   Route::post("subsidiary/update/{id}", 'API\SubsidiariesController@update');
   Route::post("subsidiary/delete/{id}", 'API\SubsidiariesController@delete');
+  
+  //MARCAS
+  Route::get("brand/all", 'API\BrandController@all');
+  Route::post("brand/create", 'API\BrandController@create');
+  Route::get("brand/get/{id}", 'API\BrandController@get');
+  Route::post("brand/update/{id}", 'API\BrandController@update');
+  Route::post("brand/delete/{id}", 'API\BrandController@delete');
+  
+  
+  //DISEÑOS
+  Route::get("design/all", 'API\DesignController@all');
+  Route::post("design/create", 'API\DesignController@create');
+  Route::get("design/get/{id}", 'API\DesignController@get');
+  Route::post("design/update/{id}", 'API\DesignController@update');
+  Route::post("design/delete/{id}", 'API\DesignController@delete');
 });
 
 
