@@ -25,7 +25,7 @@ class Rin extends Model
     /**
      * @var array
      */
-    protected $fillable = ['design_id', 'name', 'updated_at', 'created_at'];
+    protected $fillable = ['design_id', 'name','points_gr','points_rd', 'updated_at', 'created_at'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -41,5 +41,12 @@ class Rin extends Model
     public function invoiceReferences()
     {
         return $this->hasMany('App\InvoiceReference');
+    }
+        /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function rinPointsByPerfils()
+    {
+        return $this->hasMany('App\RinPointsByProfile');
     }
 }
