@@ -58,6 +58,12 @@ Route::group(['middleware'=>['auth:api']], function() {
   Route::get("design/get/{id}", 'API\DesignController@get');
   Route::post("design/update/{id}", 'API\DesignController@update');
   Route::post("design/delete/{id}", 'API\DesignController@delete');
+  
+  //SLIDES
+  Route::get("slides/all", 'API\SlidesController@all');
+  Route::post("slides/create", 'API\SlidesController@create');
+  Route::get("slides/get/{id}", 'API\SlidesController@get');
+  Route::put("slides/update/{id}", 'API\SlidesController@update');
 });
 
 
