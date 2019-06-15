@@ -15,33 +15,36 @@ use Illuminate\Database\Eloquent\Model;
  * @property City $city
  * @property User[] $users
  */
-class Subsidiaries extends Model
-{
-    /**
-     * The table associated with the model.
-     * 
-     * @var string
-     */
-    protected $table = 'subsidiary';
+class Subsidiaries extends Model {
 
-    /**
-     * @var array
-     */
-    protected $fillable = ['cities_id', 'name', 'address', 'type', 'updated_at', 'created_at'];
+  /**
+   * The table associated with the model.
+   * 
+   * @var string
+   */
+  protected $table = 'subsidiary';
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function city()
-    {
-        return $this->belongsTo('App\Cities', 'cities_id');
-    }
+  /**
+   * @var array
+   */
+  protected $fillable = ['cities_id', 'name', 'address', 'type', 'updated_at', 'created_at'];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function users()
-    {
-        return $this->hasMany('App\User');
-    }
+  /**
+   * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+   */
+  public function city() {
+    return $this->belongsTo('App\Cities', 'cities_id');
+  }
+
+  /**
+   * @return \Illuminate\Database\Eloquent\Relations\HasMany
+   */
+  public function users() {
+    return $this->hasMany('App\User');
+  }
+
+  public function profile() {
+    return $this->belongsTo('App\Profiles', 'profiles_id');
+  }
+
 }

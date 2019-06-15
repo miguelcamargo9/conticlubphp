@@ -71,6 +71,10 @@ Route::group(['middleware' => ['auth:api']], function() {
   Route::get("rin/get/{id}", 'API\RinController@get');
   Route::post("rin/update/{id}", 'API\RinController@update');
   Route::post("rin/delete/{id}", 'API\RinController@delete');
+  
+  //INVOICES
+  Route::post("invoice/create", 'API\InvoiceController@create');
+  
 });
 
 

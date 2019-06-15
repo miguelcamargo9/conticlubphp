@@ -12,7 +12,7 @@ use App\Models\Subsidiaries ;
 class SubsidiariesController extends BaseController {
 
   public function all() {
-    $subsidiarys = Subsidiaries::all();
+    $subsidiarys = Subsidiaries::with("city")->with("profile")->get();
     return $subsidiarys;
   }
 
@@ -28,7 +28,7 @@ class SubsidiariesController extends BaseController {
 
   ///OBTENER UNA SUCURSAL EXISTENTE
   public function get($id) {
-    $subsidiary = Subsidiaries::find($id);
+    $subsidiary = Subsidiaries::with("city")->with("profile")->find($id);
     return $subsidiary;
   }
 
