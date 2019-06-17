@@ -13,7 +13,7 @@ use App\ProductCategories;
 class ProductsController extends BaseController {
 
   public function all() {
-    $producs = Product::with("productCategory")->with("ProductImages")->get();
+    $producs = Product::with("productCategory")->get();
     return $producs;
   }
 
@@ -65,7 +65,7 @@ class ProductsController extends BaseController {
   
    ///OBTENER UN PRODUCTO EXISTENTE
   public function get($id) {
-    $product = Product::with("productCategory")->with("ProductImages")->find($id);
+    $product = Product::with("productCategory")->find($id);
     return $product;
   }
 

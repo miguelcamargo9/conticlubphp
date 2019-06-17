@@ -23,7 +23,7 @@ class RinController extends BaseController {
   }
 
   public function create(Request $r) {
-    
+
     $saveOK = true;
     $data = json_decode($r->getContent(), true);
     $rin = new Rin();
@@ -35,19 +35,19 @@ class RinController extends BaseController {
     if ($rin->save()) {
 
       $idRin = $rin->id;
-      
+
       foreach ($data['rin_points'] as $points) {
         $rinByProfile = new RinPointsByProfile();
         $rinByProfile->rin_id = $idRin;
         $rinByProfile->profiles_id = $points['profiles_id'];
         $rinByProfile->points_general = $points['points_general'];
         $rinByProfile->points_uhp = $points['points_uhp'];
-        $rinByProfile->total_points = $points['points_general']+$points['points_uhp'];
-        if (!$rinByProfile->save()){
-          $saveOK=false;
+        $rinByProfile->total_points = $points['points_general'] + $points['points_uhp'];
+        if (!$rinByProfile->save()) {
+          $saveOK = false;
         }
       }
-      
+
       return($saveOK) ? ["message" => "success"] : ["message" => "error"];
     } else {
       return["message" => "error"];
@@ -66,35 +66,40 @@ class RinController extends BaseController {
     $rin = Rin::find($id);
     $saveOK = true;
     foreach ($data as $column => $value) {
-      if ($column != "rin_points" ) {
+      if ($column != "rin_points") {
         $rin->$column = $value;
       }
     }
-    if($rin->update()){
-      $DrinByProfile = RinPointsByProfile::where("rin_id","=",$rin->id)->delete();
-      
-       foreach ($data['rin_points'] as $points) {
+    if ($rin->update()) {
+      $DrinByProfile = RinPointsByProfile::where("rin_id", "=", $rin->id)->delete();
+
+      foreach ($data['rin_points'] as $points) {
         $rinByProfile = new RinPointsByProfile();
         $rinByProfile->rin_id = $rin->id;
         $rinByProfile->profiles_id = $points['profiles_id'];
         $rinByProfile->points_general = $points['points_general'];
         $rinByProfile->points_uhp = $points['points_uhp'];
-        $rinByProfile->total_points = $points['points_general']+$points['points_uhp'];
-        if (!$rinByProfile->save()){
-          $saveOK=false;
+        $rinByProfile->total_points = $points['points_general'] + $points['points_uhp'];
+        if (!$rinByProfile->save()) {
+          $saveOK = false;
         }
       }
-      return( $saveOK) ? ["message" => "success"] : ["message" => "error"]; 
-    }else{
+      return( $saveOK) ? ["message" => "success"] : ["message" => "error"];
+    } else {
       return ["message" => "error"];
     }
-    
   }
 
   //BORRAR UN RIN
   public function delete($id) {
     $rin = Rin::find($id);
     return( $rin->delete()) ? ["message" => "success"] : ["message" => "error"];
+  }
+
+  //RETORNAR UN RIN  POR DISEÑO
+  public function getByDesign($idDesign) {
+    $desing = Rin::where("design_id", "=", $idDesign)->get();
+    return $desing;
   }
 
 }

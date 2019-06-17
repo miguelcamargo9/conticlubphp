@@ -89,5 +89,11 @@ class DesignController {
     $rountMailImg = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $rountMailImg);
     return $img->move($path, "$nameImg") ? $rountMailImg : false;
   }
+  
+  //RETORNAR UN DISEÑO POR MARCA
+  public function getByBrand($idBrand) {
+    $desing = Design::where("brand_id","=",$idBrand)->get();
+    return $desing;
+  }
 
 }

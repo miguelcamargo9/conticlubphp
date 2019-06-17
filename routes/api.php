@@ -58,6 +58,7 @@ Route::group(['middleware' => ['auth:api']], function() {
   Route::get("design/get/{id}", 'API\DesignController@get');
   Route::post("design/update/{id}", 'API\DesignController@update');
   Route::post("design/delete/{id}", 'API\DesignController@delete');
+  Route::get("design/byBrand/{idBrand}", 'API\DesignController@getByBrand');
   
   //SLIDES
   Route::get("slides/all", 'API\SlidesController@all');
@@ -71,6 +72,7 @@ Route::group(['middleware' => ['auth:api']], function() {
   Route::get("rin/get/{id}", 'API\RinController@get');
   Route::post("rin/update/{id}", 'API\RinController@update');
   Route::post("rin/delete/{id}", 'API\RinController@delete');
+  Route::get("design/byDesign/{idDesign}", 'API\RinController@getByDesign');
   
   //INVOICES
   Route::post("invoice/create", 'API\InvoiceController@create');
