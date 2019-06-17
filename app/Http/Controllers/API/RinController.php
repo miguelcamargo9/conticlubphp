@@ -40,7 +40,9 @@ class RinController extends BaseController {
         $rinByProfile = new RinPointsByProfile();
         $rinByProfile->rin_id = $idRin;
         $rinByProfile->profiles_id = $points['profiles_id'];
-        $rinByProfile->points = $points['points'];
+        $rinByProfile->points_general = $points['points_general'];
+        $rinByProfile->points_uhp = $points['points_uhp'];
+        $rinByProfile->total_points = $points['points_general']+$points['points_uhp'];
         if (!$rinByProfile->save()){
           $saveOK=false;
         }
@@ -75,7 +77,9 @@ class RinController extends BaseController {
         $rinByProfile = new RinPointsByProfile();
         $rinByProfile->rin_id = $rin->id;
         $rinByProfile->profiles_id = $points['profiles_id'];
-        $rinByProfile->points = $points['points'];
+        $rinByProfile->points_general = $points['points_general'];
+        $rinByProfile->points_uhp = $points['points_uhp'];
+        $rinByProfile->total_points = $points['points_general']+$points['points_uhp'];
         if (!$rinByProfile->save()){
           $saveOK=false;
         }
