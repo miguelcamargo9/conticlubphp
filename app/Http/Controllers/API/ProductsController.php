@@ -70,12 +70,12 @@ class ProductsController extends BaseController {
   }
   
   //Obetenr un producto por idCategory
-  public function getByCategory($idCategory) {
+  public function getProductByCategory($idCategory) {
     $products = Product::where("product_categories_id","=",$idCategory)->get();
     return $products;
   }
   
-  public function ProductCategories() {
+  public function getProductCategories() {
     return ProductCategories::all();
   }
 
