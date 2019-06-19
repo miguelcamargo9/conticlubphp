@@ -30,7 +30,7 @@ Route::group(['middleware' => ['auth:api']], function() {
   Route::get("products/get/{id}", 'API\ProductsController@get');
   Route::post("products/update/{id}", 'API\ProductsController@update');
   Route::get("products/byCategory/{idCategory}", 'API\ProductsController@getByCategory');
-  Route::get("products/categories/all", 'API\RinController@getProductCategories');
+  Route::get("products/categories/all", 'API\ProductsController@getProductCategories');
 
   //CIUDADES
   Route::get("cities/all", 'API\CitiesController@all');
