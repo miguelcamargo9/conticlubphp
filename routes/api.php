@@ -25,10 +25,12 @@ Route::group(['middleware' => ['auth:api']], function() {
   Route::post("users/update/{id}", 'API\UsersController@update');
 
   //PRODUCTOS
-  Route::get("producs/all", 'API\ProductsController@all');
-  Route::post("producs/create", 'API\ProductsController@create');
-  Route::get("producs/get/{id}", 'API\ProductsController@get');
-  Route::post("producs/update/{id}", 'API\ProductsController@update');
+  Route::get("products/all", 'API\ProductsController@all');
+  Route::post("products/create", 'API\ProductsController@create');
+  Route::get("products/get/{id}", 'API\ProductsController@get');
+  Route::post("products/update/{id}", 'API\ProductsController@update');
+  Route::get("products/byCategory/{idCategory}", 'API\ProductsController@getByCategory');
+  Route::get("products/categories/all", 'API\RinController@getProductCategories');
 
   //CIUDADES
   Route::get("cities/all", 'API\CitiesController@all');
@@ -72,7 +74,7 @@ Route::group(['middleware' => ['auth:api']], function() {
   Route::get("rin/get/{id}", 'API\RinController@get');
   Route::post("rin/update/{id}", 'API\RinController@update');
   Route::post("rin/delete/{id}", 'API\RinController@delete');
-  Route::get("design/byDesign/{idDesign}", 'API\RinController@getByDesign');
+  Route::get("rin/byDesign/{idDesign}", 'API\RinController@getByDesign');
   
   //INVOICES
   Route::post("invoice/create", 'API\InvoiceController@create');
