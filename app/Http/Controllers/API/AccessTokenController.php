@@ -18,13 +18,17 @@ class AccessTokenController extends ATC {
       
       //dd($request->getParsedBody());
       $username = $request->getParsedBody()['username'];
-      $password = bcrypt($request->getParsedBody()['password']);
+      $password = ($request->getParsedBody()['password']);
       //dd("pex azul");
       //get user
       //change to 'email' if you want
       //dd("error");
       $user = User::where('identification_number', '=', $username)->with("profile.profilesMenus.menu")->first();
-      
+      if ($user!=null && !empty($user)){
+        if(!password_verify($password, $user['password'])){
+          return ["message" => "Credenciales incorrectas"];
+        }
+      }
       //generate token
       $tokenResponse = parent::issueToken($request);
 
@@ -33,9 +37,9 @@ class AccessTokenController extends ATC {
 
       //convert json to array
       $data = json_decode($content, true);
-
+       
       if (isset($data["error"]))
-        throw new OAuthServerException('The user credentials were incorrect.', 6, 'invalid_credentials', 401);
+        return ["message" => "Credenciales incorrectas"];
 
       //add access token to user
       $user = collect($user);
