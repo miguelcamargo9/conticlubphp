@@ -23,6 +23,7 @@ Route::group(['middleware' => ['auth:api']], function() {
   Route::post("users/create", 'API\UsersController@create');
   Route::get("users/getuser/{id}", 'API\UsersController@get');
   Route::post("users/update/{id}", 'API\UsersController@update');
+  Route::get("users/withsubsidiary", 'API\UsersController@withSubsidiary');
 
   //PRODUCTOS
   Route::get("products/all", 'API\ProductsController@all');

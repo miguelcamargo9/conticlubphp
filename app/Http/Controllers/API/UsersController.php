@@ -48,5 +48,11 @@ class UsersController extends BaseController {
     }
     return( $user->update())?["message"=>"success"]:["message"=>"error"];
   }
+  
+  //USUARIOS CON SUCURSAL
+  public function withSubsidiary (){
+    $users = User::where("subsidiary_id","!=","NULL")->with("profile")->with("subsidiary")->get();
+    return (empty($users))?["message" => "No se encontraron registros"]:$users;
+  }
+  
 }
-
