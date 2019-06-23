@@ -30,14 +30,16 @@ class InvoiceController extends BaseController {
     }
 
     if ($invoice->save()) {
-      $idInvoice = $invoice->id;
-      $path = public_path() . "/invoices/{$idInvoice}";
+      if ($r->hasfile('image')) {
+        $idInvoice = $invoice->id;
+        $path = public_path() . "/invoices/{$idInvoice}";
 
-      $nomeMainOmg = $image->getClientOriginalName();
-      $image->move($path, "$nomeMainOmg");
-      //actualizar y guardar la imagen del registro
-      $rountMailImg = "/invoices/{$idInvoice}/{$nomeMainOmg}";
-      $invoice->image = $rountMailImg;
+        $nomeMainOmg = $image->getClientOriginalName();
+        $image->move($path, "$nomeMainOmg");
+        //actualizar y guardar la imagen del registro
+        $rountMailImg = "/invoices/{$idInvoice}/{$nomeMainOmg}";
+        $invoice->image = $rountMailImg;
+      }
       //SI GUARDA BIEN LA IMAGNE DE LA FACTURA
       if ($invoice->update()) {
         //BUSCAR EL USUARIO

@@ -24,12 +24,18 @@ class UsersController extends BaseController {
   //CREAR UN NUEVO USUARIO
   public function create(Request $r) {
     $userR=json_decode($r->getContent(), true);
-    $myUser = new User();
-    foreach ($userR as $column => $value) {
-      $value = ($column=="password")?bcrypt($value):$value;
-      $myUser->$column = $value;
+    $inDb = User::where("identification_number",$userR['identification_number'])->orWhere("email",$userR['email'])->count();
+    
+    if($inDb<=0){
+      $myUser = new User();
+      foreach ($userR as $column => $value) {
+        $value = ($column=="password")?bcrypt($value):$value;
+        $myUser->$column = $value;
+      }
+      return( $myUser->save())?["message"=>"success"]:["message"=>"error"];
+    }else{
+      return["message"=>"Este usuario ya se encuentra registrado"];
     }
-    return( $myUser->save())?["message"=>"success"]:["message"=>"error"];
   }
   
   ///OBTENER UN USUARIO EXISTENTE
