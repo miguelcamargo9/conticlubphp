@@ -51,16 +51,20 @@ class InvoiceController extends BaseController {
         foreach ($rines as $rinInfo) {
 
           $pointsByPerfil = RinPointsByProfile::where([["rin_id", "=", $rinInfo['rin_id']], ["profiles_id", "=", $userProfile]])->get();
-
-          $points = $rinInfo['amount'] * $pointsByPerfil[0]['total_points'];
-          $totalPoints += $points;
-          $invoiceReference = new InvoiceReferences();
-          $invoiceReference->amount = $rinInfo['amount'];
-          $invoiceReference->invoice_id = $idInvoice;
-          $invoiceReference->rin_id = $rinInfo['rin_id'];
-          $invoiceReference->points = $points;
-          if (!$invoiceReference->save()) {
-            $save = false;
+          
+          if((count($pointsByPerfil) >= 1)){
+            $points = $rinInfo['amount'] * $pointsByPerfil[0]['total_points'];
+            $totalPoints += $points;
+            $invoiceReference = new InvoiceReferences();
+            $invoiceReference->amount = $rinInfo['amount'];
+            $invoiceReference->invoice_id = $idInvoice;
+            $invoiceReference->rin_id = $rinInfo['rin_id'];
+            $invoiceReference->points = $points;
+            if (!$invoiceReference->save()) {
+              $save = false;
+            }
+          }else{
+            return  ["message" => "error","detail"=>"No existe configuracion para el rin: {$rinInfo['rin_id']} o para el perfil: $userProfile"];
           }
         }
         if ($save) {
@@ -93,7 +97,7 @@ class InvoiceController extends BaseController {
       $save = false;
     }
 
-    return ($save) ? ["message" => "success"] : ["message" => "error"];
+    return ($save) ? ["message" => "success","currentPoints"=>$user->points,"points"=>$totalPoints] : ["message" => "error"];
   }
 
 }
