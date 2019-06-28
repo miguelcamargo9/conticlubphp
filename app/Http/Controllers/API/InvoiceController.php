@@ -85,7 +85,7 @@ class InvoiceController extends BaseController {
                 $pointsMovimentsDetail = new PointsMovimentsDetail();
                 $pointsMovimentsDetail->points = $totalPoints;
                 $pointsMovimentsDetail->points_id = $newPoints->id;
-                $pointsMovimentsDetail->points_movements_id = $newPoints->id;
+                $pointsMovimentsDetail->points_movements_id = $pointsMovements->id;
                 $pointsMovimentsDetail->save();
               }
             }
