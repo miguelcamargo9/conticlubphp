@@ -24,7 +24,8 @@ Route::group(['middleware' => ['auth:api']], function() {
   Route::get("users/getuser/{id}", 'API\UsersController@get');
   Route::post("users/update/{id}", 'API\UsersController@update');
   Route::get("users/withsubsidiary", 'API\UsersController@withSubsidiary');
-
+  Route::get("users/historyinvoice/{id}", 'API\UsersController@historyInvoice');
+  
   //PRODUCTOS
   Route::get("products/all", 'API\ProductsController@all');
   Route::post("products/create", 'API\ProductsController@create');
@@ -79,6 +80,12 @@ Route::group(['middleware' => ['auth:api']], function() {
   
   //INVOICES
   Route::post("invoice/create", 'API\InvoiceController@create');
+  
+  //CAMBIO DE PRODUCTOS
+   Route::post("product/applyfor", 'API\ChangePointsController@applyFor');
+   Route::post("product/approve/{id}", 'API\ChangePointsController@approve');
+   
+   
   
 });
 

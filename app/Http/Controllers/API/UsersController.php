@@ -61,4 +61,10 @@ class UsersController extends BaseController {
     return (empty($users))?["message" => "No se encontraron registros"]:$users;
   }
   
+  //HISTORIA DE REGISTROS DE FACTURAS
+  public function historyInvoice($id) {
+    $user = User::with("invoices.invoiceReferences")->find($id);
+    return $user;
+  }
+  
 }

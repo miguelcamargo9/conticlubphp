@@ -42,7 +42,7 @@ class Invoice extends Model
      */
     public function invoiceReferences()
     {
-        return $this->hasMany('App\InvoiceReference');
+        return $this->hasMany('App\InvoiceReferences');
     }
 
     /**
@@ -50,6 +50,6 @@ class Invoice extends Model
      */
     public function points()
     {
-        return $this->hasMany('App\Point');
+        return $this->hasMany('App\Points');
     }
 }
