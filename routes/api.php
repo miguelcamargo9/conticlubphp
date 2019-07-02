@@ -84,6 +84,10 @@ Route::group(['middleware' => ['auth:api']], function() {
   //CAMBIO DE PRODUCTOS
    Route::post("product/applyfor", 'API\ChangePointsController@applyFor');
    Route::post("product/approve/{id}", 'API\ChangePointsController@approve');
+   Route::post("product/reject/{id}", 'API\ChangePointsController@reject');
+   Route::get("product/applyfor/all", 'API\ChangePointsController@all');
+   Route::get("product/applyfor/getbyuser/{id}", 'API\ChangePointsController@GetbyUser');
+  
    
    
   

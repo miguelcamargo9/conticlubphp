@@ -26,7 +26,7 @@ class AccessTokenController extends ATC {
       $user = User::where('identification_number', '=', $username)->with("profile.profilesMenus.menu")->first();
       if ($user!=null && !empty($user)){
         if(!password_verify($password, $user['password'])){
-          return ["message" => "Credenciales incorrectas"];
+          return ["message" => "Credenciales incorrectas .."];
         }
       }
       //generate token
@@ -37,7 +37,7 @@ class AccessTokenController extends ATC {
 
       //convert json to array
       $data = json_decode($content, true);
-       
+      
       if (isset($data["error"]))
         return ["message" => "Credenciales incorrectas"];
 
@@ -46,7 +46,7 @@ class AccessTokenController extends ATC {
       $user->put('access_token', $data['access_token']);
       //if you need to send out token_type, expires_in and refresh_token in the response body uncomment following lines
        $user->put('token_type', $data['token_type']);
-      // $user->put('expires_in', $data['expires_in']);
+       $user->put('expires_in', $data['expires_in']);
       // $user->put('refresh_token', $data['refresh_token']);
 
       return Response::json(array($user));
