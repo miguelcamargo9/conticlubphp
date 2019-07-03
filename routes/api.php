@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 Route::post('login', 'API\AccessTokenController@issueToken');
 Route::get("perro", 'API\TestController@dog');
 //RUTAS PARA EL ADMINISTRADOR
-Route::group(['middleware' => ['auth:api']], function() {
+Route::group(['middleware' => ['auth:api'],['middleware' => 'cors']], function() {
 
   Route::get("allprofiles", 'API\ProfilesController@allProfiles');
   //CRUD PARA LOS USUARIOS
