@@ -25,7 +25,7 @@ Route::group(['middleware' => ['auth:api']], function($router) {
   Route::post("users/update/{id}", 'API\UsersController@update');
   Route::get("users/withsubsidiary", 'API\UsersController@withSubsidiary');
   Route::get("users/historyinvoice/{id}", 'API\UsersController@historyInvoice');
-  
+
   //PRODUCTOS
   Route::get("products/all", 'API\ProductsController@all');
   Route::post("products/create", 'API\ProductsController@create');
@@ -33,6 +33,12 @@ Route::group(['middleware' => ['auth:api']], function($router) {
   Route::post("products/update/{id}", 'API\ProductsController@update');
   Route::get("products/byCategory/{idCategory}", 'API\ProductsController@getProductByCategory');
   Route::get("products/categories/all", 'API\ProductsController@getProductCategories');
+  
+  //PRODUCTS CATEGORIES
+  Route::get("product/categoty/all", 'API\ProductCategoriesController@all');
+  Route::post("product/categoty/create", 'API\ProductCategoriesController@create');
+  Route::get("product/categoty/get/{id}", 'API\ProductCategoriesController@get');
+  Route::post("product/categoty/update/{id}", 'API\ProductCategoriesController@update');
 
   //CIUDADES
   Route::get("cities/all", 'API\CitiesController@all');
@@ -40,6 +46,11 @@ Route::group(['middleware' => ['auth:api']], function($router) {
   Route::get("cities/get/{id}", 'API\CitiesController@get');
   Route::post("cities/update/{id}", 'API\CitiesController@update');
 
+  //PROFILES
+  Route::get("profiles/all", 'API\ProfilesController@all');
+  Route::post("profiles/create", 'API\ProfilesController@create');
+  Route::get("profiles/get/{id}", 'API\ProfilesController@get');
+  Route::post("profiles/update/{id}", 'API\ProfilesController@update');
 
   //SUCURSALES
   Route::get("subsidiary/all", 'API\SubsidiariesController@all');
@@ -63,7 +74,7 @@ Route::group(['middleware' => ['auth:api']], function($router) {
   Route::post("design/update/{id}", 'API\DesignController@update');
   Route::post("design/delete/{id}", 'API\DesignController@delete');
   Route::get("design/byBrand/{idBrand}", 'API\DesignController@getByBrand');
-  
+
   //SLIDES
   Route::get("slides/all", 'API\SlidesController@all');
   Route::post("slides/create", 'API\SlidesController@create');
@@ -77,20 +88,16 @@ Route::group(['middleware' => ['auth:api']], function($router) {
   Route::post("rin/update/{id}", 'API\RinController@update');
   Route::post("rin/delete/{id}", 'API\RinController@delete');
   Route::get("rin/byDesign/{idDesign}", 'API\RinController@getByDesign');
-  
+
   //INVOICES
   Route::post("invoice/create", 'API\InvoiceController@create');
-  
+
   //CAMBIO DE PRODUCTOS
-   Route::post("product/applyfor", 'API\ChangePointsController@applyFor');
-   Route::post("product/approve/{id}", 'API\ChangePointsController@approve');
-   Route::post("product/reject/{id}", 'API\ChangePointsController@reject');
-   Route::get("product/applyfor/all", 'API\ChangePointsController@all');
-   Route::get("product/applyfor/getbyuser/{id}", 'API\ChangePointsController@GetbyUser');
-  
-   
-   
-  
+  Route::post("product/applyfor", 'API\ChangePointsController@applyFor');
+  Route::post("product/approve/{id}", 'API\ChangePointsController@approve');
+  Route::post("product/reject/{id}", 'API\ChangePointsController@reject');
+  Route::get("product/applyfor/all", 'API\ChangePointsController@all');
+  Route::get("product/applyfor/getbyuser/{id}", 'API\ChangePointsController@GetbyUser');
 });
 
 
