@@ -35,10 +35,10 @@ Route::group(['middleware' => ['auth:api']], function($router) {
   Route::get("products/categories/all", 'API\ProductsController@getProductCategories');
   
   //PRODUCTS CATEGORIES
-  Route::get("product/categoty/all", 'API\ProductCategoriesController@all');
-  Route::post("product/categoty/create", 'API\ProductCategoriesController@create');
-  Route::get("product/categoty/get/{id}", 'API\ProductCategoriesController@get');
-  Route::post("product/categoty/update/{id}", 'API\ProductCategoriesController@update');
+  Route::get("product/category/all", 'API\ProductCategoriesController@all');
+  Route::post("product/category/create", 'API\ProductCategoriesController@create');
+  Route::get("product/category/get/{id}", 'API\ProductCategoriesController@get');
+  Route::put("product/category/update/{id}", 'API\ProductCategoriesController@update');
 
   //CIUDADES
   Route::get("cities/all", 'API\CitiesController@all');
@@ -50,7 +50,7 @@ Route::group(['middleware' => ['auth:api']], function($router) {
   Route::get("profiles/all", 'API\ProfilesController@all');
   Route::post("profiles/create", 'API\ProfilesController@create');
   Route::get("profiles/get/{id}", 'API\ProfilesController@get');
-  Route::post("profiles/update/{id}", 'API\ProfilesController@update');
+  Route::put("profiles/update/{id}", 'API\ProfilesController@update');
 
   //SUCURSALES
   Route::get("subsidiary/all", 'API\SubsidiariesController@all');
