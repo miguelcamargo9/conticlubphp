@@ -50,4 +50,16 @@ class ProfilesController extends BaseController {
     return( $profile->update()) ? ["message" => "success"] : ["message" => "error"];
   }
 
+  //DELETE a profile
+  public function delete($id) {
+    $profile = Profiles::find($id);
+    try {
+      $profile->delete();
+      return["message" => "success"];
+    } catch (\Illuminate\Database\QueryException $e) {
+      $error = $e->errorInfo;
+      return ($error[0] == "23000") ? ["message" => "error", "detail" => "Este perfil se esta usando en otros registros. Por favor verifique que este perfil se puede eliminar"] : ["message" => "error", "detail" => $error[2]];
+    }
+  }
+
 }

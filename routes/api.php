@@ -51,6 +51,7 @@ Route::group(['middleware' => ['auth:api']], function($router) {
   Route::post("profiles/create", 'API\ProfilesController@create');
   Route::get("profiles/get/{id}", 'API\ProfilesController@get');
   Route::put("profiles/update/{id}", 'API\ProfilesController@update');
+  Route::delete("profiles/delete/{id}", 'API\ProfilesController@delete');
 
   //SUCURSALES
   Route::get("subsidiary/all", 'API\SubsidiariesController@all');
@@ -98,6 +99,12 @@ Route::group(['middleware' => ['auth:api']], function($router) {
   Route::post("product/reject/{id}", 'API\ChangePointsController@reject');
   Route::get("product/applyfor/all", 'API\ChangePointsController@all');
   Route::get("product/applyfor/getbyuser/{id}", 'API\ChangePointsController@GetbyUser');
+  
+  //LISTA DE DESEOS
+   Route::post("wishlist/create", 'API\WishListController@create');
+   Route::get("wishlist/get/{id}", 'API\WishListController@get');
+   Route::get("wishlist/all", 'API\WishListController@all');
+   
 });
 
 
