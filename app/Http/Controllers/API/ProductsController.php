@@ -13,7 +13,7 @@ use App\ProductCategories;
 class ProductsController extends BaseController {
 
   public function all() {
-    $producs = Product::with("productCategory")->get();
+    $producs = Product::where("state","1")->with("productCategory")->get();
     return $producs;
   }
 
@@ -77,6 +77,41 @@ class ProductsController extends BaseController {
   
   public function getProductCategories() {
     return ProductCategories::all();
+  }
+  
+  //ACTIALIZAR UN PRODUCTO
+  public function update($id, Request $r) {
+    //$data = json_decode($r->getContent(), true);
+    $data = json_decode(Input::post("data"), true);
+   
+    $product = Product::find($id);
+    $idCategory= $product->product_categories_id;
+    $category = ProductCategories::find($idCategory);
+    
+    $nameCategory = $category['name'];
+    
+    foreach ($data as $column => $value) {
+      $product->$column = $value;
+    }
+    if ($r->hasfile('image')) {
+      $img = $r->file('image');
+      $idProduct = $product->id;
+      $path = public_path()."/products/$nameCategory/{$idProduct}";
+      
+      $nomeMainOmg = $img->getClientOriginalName();
+      $img->move($path, "$nomeMainOmg");
+      //actualizar y guardar la imagen del registro
+      $rountMailImg = "/products/$nameCategory/{$idProduct}/$nomeMainOmg";
+      $product->image = urlencode($rountMailImg);
+      $product->image = $rountMailImg;
+    }
+    return( $product->update()) ? ["message" => "success"] : ["message" => "error"];
+  }
+  
+  public function delete($id) {
+    $product = Product::find($id);
+    $product->state=2;
+    return( $product->update()) ? ["message" => "success"] : ["message" => "error"];
   }
 
 }

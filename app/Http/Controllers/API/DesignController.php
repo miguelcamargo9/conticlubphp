@@ -30,12 +30,12 @@ class DesignController {
       $desing->$column = $value;
     }
     try {
-      if ($desing->save()) {
+      if ($desing->save() && $r->hasfile('image')) {
         $idDesign = $desing->id;
         $img = $r->file('image');
-        $rountMailImg = $this->saveImg($img, $idDesign);
-        if ($rountMailImg == false) {
-          return false;
+       
+        if (!$rountMailImg = $this->saveImg($img, $idDesign)) {
+           return ["message" => "error"];
         }
         $desing->image = $rountMailImg;
         $desing->update();
@@ -85,8 +85,8 @@ class DesignController {
     $nameImg = $img->getClientOriginalName();
 
     //actualizar y guardar la imagen del registro
-    $rountMailImg = "{$path}/{$nameImg}";
-    $rountMailImg = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $rountMailImg);
+    $rountMailImg = "/desing/{$idDesign}}/{$nameImg}";
+   
     return $img->move($path, "$nameImg") ? $rountMailImg : false;
   }
   

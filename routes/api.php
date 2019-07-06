@@ -31,6 +31,7 @@ Route::group(['middleware' => ['auth:api']], function($router) {
   Route::post("products/create", 'API\ProductsController@create');
   Route::get("products/get/{id}", 'API\ProductsController@get');
   Route::post("products/update/{id}", 'API\ProductsController@update');
+  Route::post("products/delete/{id}", 'API\ProductsController@delete');
   Route::get("products/byCategory/{idCategory}", 'API\ProductsController@getProductByCategory');
   Route::get("products/categories/all", 'API\ProductsController@getProductCategories');
   
