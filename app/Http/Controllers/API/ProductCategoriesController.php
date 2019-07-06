@@ -44,5 +44,16 @@ class ProductCategoriesController extends BaseController {
     }
     return( $productCategory->update()) ? ["message" => "success"] : ["message" => "error"];
   }
+    //delete an existing Product Category
+  public function delete($id) {
+    $productCategory = ProductCategories::find($id);
+    try {
+      $productCategory->delete();
+      return["message" => "success"];
+    } catch (\Illuminate\Database\QueryException $e) {
+      $error = $e->errorInfo;
+      return ($error[0] == "23000") ? ["message" => "error", "detail" => "Esta categoría esta siendo usada en uno o más producto"] : ["message" => "error", "detail" => $error[2]];
+    }
+  }
 
 }

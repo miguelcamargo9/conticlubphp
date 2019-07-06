@@ -39,6 +39,7 @@ Route::group(['middleware' => ['auth:api']], function($router) {
   Route::post("product/category/create", 'API\ProductCategoriesController@create');
   Route::get("product/category/get/{id}", 'API\ProductCategoriesController@get');
   Route::put("product/category/update/{id}", 'API\ProductCategoriesController@update');
+  Route::delete("product/category/delete/{id}", 'API\ProductCategoriesController@delete');
 
   //CIUDADES
   Route::get("cities/all", 'API\CitiesController@all');
