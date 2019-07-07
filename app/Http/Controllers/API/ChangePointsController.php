@@ -79,48 +79,53 @@ class ChangePointsController extends BaseController {
               ->select('points.points as puntos', 'invoice.id as factura', 'points.id as points_id')
               ->orderBy('points.created_at', 'asc')->get()->toArray();
 
-
+      
       $pintsProduct = $change->points;
       $count = 0;
       $pointsComplete = false;
       $saveOK = true;
 
-      //RECORRO LOS PUNTOS QUE TIENE EL USUARIO PARA EMPEZAR A DECONTAR
-      while (!$pointsComplete) {
-        $p = $pointsUser[$count]['puntos'];
-        $idPoints = $pointsUser[$count]['points_id'];
-        $complete = $pintsProduct - $p;
-        $state = "";
-        $newPoints = null;
-        $pointsSave = 0;
+      if (!empty($pointsUser)) {
+        //RECORRO LOS PUNTOS QUE TIENE EL USUARIO PARA EMPEZAR A DECONTAR
+        while (!$pointsComplete) {
+          $p = $pointsUser[$count]['puntos'];
+          $idPoints = $pointsUser[$count]['points_id'];
+          $complete = $pintsProduct - $p;
+          $state = "";
+          $newPoints = null;
+          $pointsSave = 0;
 
-        if ($complete < 0) {
-          $newPoints = ($complete * (-1));
-          $pointsSave = $p - $newPoints;
-          $pointsComplete = true;
+          if ($complete < 0) {
+            $newPoints = ($complete * (-1));
+            $pointsSave = $p - $newPoints;
+            $pointsComplete = true;
 
-          $state = "partial";
-        } elseif ($complete == 0) {
-          $pointsComplete = true;
-          $pointsSave = $p;
-          $state = "used";
-        } else {
-          $pointsSave = $p;
-          $pintsProduct = $complete;
-          $state = "used";
+            $state = "partial";
+          } elseif ($complete == 0) {
+            $pointsComplete = true;
+            $pointsSave = $p;
+            $state = "used";
+          } else {
+            $pointsSave = $p;
+            $pintsProduct = $complete;
+            $state = "used";
+          }
+          if (!$this->updateHistoryPoints($idPoints, $state, $pointsSave, $newPoints)) {
+            $saveOK = false;
+          } else {
+            $change->comment = ($info['comment'] != null) ? $info['comment'] != null : "-";
+            $change->state = "aprobado";
+            $change->approver_id = $user->id;
+            ($change->update()) ? DB::commit() : $saveOK = false;
+          }
+          $count++;
         }
-        if (!$this->updateHistoryPoints($idPoints, $state, $pointsSave, $newPoints)) {
-          $saveOK = false;
-        } else {
-          $change->comment = $info['comment'];
-          $change->state = "aprobado";
-          $change->approver_id = $user->id;
-          ($change->update()) ? DB::commit() : $saveOK = false;
-        }
-        $count++;
+        return($saveOK) ? ["message" => "success"] : ["message" => "error"];
+      } else {
+        return["message" => "error","detail"=>"No se encontraron facturas del usuario"];
       }
-      return($saveOK) ? ["message" => "success"] : ["message" => "error"];
-    } else {
+    }else{
+      
       return["message" => "No tiene permitodo hacer esta acción"];
     }
     //print_r($pointsUser);
@@ -130,7 +135,7 @@ class ChangePointsController extends BaseController {
   public function reject($id, Request $r) {
     $change = ChangePoints::find($id);
     $user = $r->user();
-    
+
     if ($user->profiles_id == 4) {
       $info = json_decode($r->getContent(), true);
 
@@ -148,22 +153,23 @@ class ChangePointsController extends BaseController {
       return["message" => "No tiene permitodo hacer esta acción"];
     }
   }
-  
+
   //RETORNAR TODAS LAS SOLICITUDES QUE SE HAN HECHO
   public function all() {
     $change = ChangePoints::with("product")->with("user")->get();
     return $change;
   }
-  
+
   //RETORNAR TODAS LAS SOLICITUDES DE UN USUARIO
   public function GetbyUser($idUser) {
-    $change = ChangePoints::with("product")->with("user")->where("users_id",$idUser)->get();
+    $change = ChangePoints::with("product")->with("user")->where("users_id", $idUser)->get();
     return $change;
   }
-  
+
   //RETORNAR TODAS LAS SOLICITUDES DE UN USUARIO
   public function get($id) {
     $change = ChangePoints::with("product")->with("user")->find($id);
     return $change;
   }
+
 }

@@ -23,11 +23,13 @@ class AccessTokenController extends ATC {
       //get user
       //change to 'email' if you want
       //dd("error");
-      $user = User::where('identification_number', '=', $username)->with("profile.profilesMenus.menu")->first();
+      $user = User::where([['identification_number', $username],["state","1"]])->with("profile.profilesMenus.menu")->first();
       if ($user!=null && !empty($user)){
         if(!password_verify($password, $user['password'])){
-          return ["message" => "Credenciales incorrectas .."];
+          return ["message" => "Credenciales incorrectas"];
         }
+      }else{
+        return ["message" => "Usuario no registrado o inactivo"];
       }
       //generate token
       $tokenResponse = parent::issueToken($request);
