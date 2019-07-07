@@ -27,7 +27,7 @@ class InvoiceController extends BaseController {
     $invoice->subsidiary_id =$idSubsidiary;
     $save = true;
    
-
+    $invoice->users_id = $idUser;
     foreach ($data as $column => $value) {
       $invoice->$column = $value;
     }
