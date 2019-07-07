@@ -101,12 +101,15 @@ Route::group(['middleware' => ['auth:api']], function($router) {
   Route::post("product/reject/{id}", 'API\ChangePointsController@reject');
   Route::get("product/applyfor/all", 'API\ChangePointsController@all');
   Route::get("product/applyfor/getbyuser/{id}", 'API\ChangePointsController@GetbyUser');
+  Route::get("product/applyfor/get/{id}", 'API\ChangePointsController@get');
   
   //LISTA DE DESEOS
    Route::post("wishlist/create", 'API\WishListController@create');
    Route::get("wishlist/get/{id}", 'API\WishListController@get');
    Route::get("wishlist/all", 'API\WishListController@all');
    
+   //REPORTES
+   Route::get("reportes/invoicebyuser", 'API\RerportController@invoicesByUsers');
 });
 
 

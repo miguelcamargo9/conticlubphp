@@ -160,4 +160,10 @@ class ChangePointsController extends BaseController {
     $change = ChangePoints::with("product")->with("user")->where("users_id",$idUser)->get();
     return $change;
   }
+  
+  //RETORNAR TODAS LAS SOLICITUDES DE UN USUARIO
+  public function get($id) {
+    $change = ChangePoints::with("product")->with("user")->find($id);
+    return $change;
+  }
 }
