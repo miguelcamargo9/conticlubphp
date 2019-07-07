@@ -95,6 +95,7 @@ Route::group(['middleware' => ['auth:api']], function($router) {
 
   //INVOICES
   Route::post("invoice/create", 'API\InvoiceController@create');
+  Route::get("invoice/get", 'API\InvoiceController@get');
 
   //CAMBIO DE PRODUCTOS
   Route::post("product/applyfor", 'API\ChangePointsController@applyFor');

@@ -105,5 +105,10 @@ class InvoiceController extends BaseController {
     }
     return ($save) ? ["message" => "success","currentPoints"=>$user->points,"points"=>$totalPoints] : ["message" => "error"];
   }
+  
+  public function get() {
+    $facturas = Invoice::with("user:id,name")->get();
+    return $facturas;
+  }
 
 }
