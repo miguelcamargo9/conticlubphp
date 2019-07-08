@@ -26,6 +26,7 @@ Route::group(['middleware' => ['auth:api']], function($router) {
   Route::get("users/withsubsidiary", 'API\UsersController@withSubsidiary');
   Route::get("users/historyinvoice/{id}", 'API\UsersController@historyInvoice');
   Route::put("users/delete/{id}", 'API\UsersController@delete');
+  Route::post("users/contactenos", 'API\UsersController@contactenos');
 
   //PRODUCTOS
   Route::get("products/all", 'API\ProductsController@all');

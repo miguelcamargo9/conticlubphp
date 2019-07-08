@@ -7,6 +7,8 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
+use App\Mail\contactenos;
+use Illuminate\Support\Facades\Mail;
 //MODELOS
 use App\User;
 
@@ -114,6 +116,14 @@ class UsersController extends BaseController {
   public function historyInvoice($id) {
     $user = User::with("invoices.invoiceReferences")->with("invoices.points")->find($id);
     return $user;
+  }
+  
+  public function contactenos(Request $r) {
+    $infoUser = $r->user();
+    $email = json_decode($r->getContent(), true);
+    $email['uname']=$infoUser->name;  
+    $envio = Mail::to('andre0190@gmail.com')->send(new contactenos($email));
+    print_r($envio);
   }
 
 }
