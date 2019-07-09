@@ -19,11 +19,9 @@ class AccessTokenController extends ATC {
       //dd($request->getParsedBody());
       $username = $request->getParsedBody()['username'];
       $password = ($request->getParsedBody()['password']);
-      //dd("pex azul");
       //get user
       //change to 'email' if you want
-      //dd("error");
-      $user = User::where([['identification_number', $username],["state","1"]])->with("profile.profilesMenus.menu")->first();
+      $user = User::where([['identification_number', $username],["state","1"]])->with("profile.profilesMenus.menu")->with("subsidiary.city")->first();
       if ($user!=null && !empty($user)){
         if(!password_verify($password, $user['password'])){
           return ["message" => "Credenciales incorrectas"];
