@@ -119,11 +119,13 @@ class UsersController extends BaseController {
   }
   
   public function contactenos(Request $r) {
-    $infoUser = $r->user();
-    $email = json_decode($r->getContent(), true);
-    $email['uname']=$infoUser->name;  
-    $envio = Mail::to('andre0190@gmail.com')->send(new contactenos($email));
-    print_r($envio);
+    $from = "test@hostinger-tutorials.com";
+    $to = "andre0190@gmail.com";
+    $subject = "Checking PHP mail";
+    $message = "PHP mail works just fine";
+    $headers = "From:" . $from;
+    mail($to,$subject,$message, $headers);
+    echo "The email message was sent.";
   }
 
 }
