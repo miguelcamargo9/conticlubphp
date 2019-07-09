@@ -125,7 +125,7 @@ class UsersController extends BaseController {
     
     $cabeceras = 'MIME-Version: 1.0' . "\r\n";
     $cabeceras .= 'Content-type: text/html; charset=utf-8' . "\r\n";
-    $cabeceras .= "From: $infoUser->name <{$infoUser->name}>" . "\r\n";
+    $cabeceras .= "From: $infoUser->name <{$infoUser->email}>" . "\r\n";
     
     $mensaje = "<html>
           <head>
@@ -142,7 +142,7 @@ class UsersController extends BaseController {
           </body>
       </html>";
 
-    $para = "andre0190@gmail.com";
+    $para = "andre0190@gmail.com,miguelcamargo9@gmail.com";
 
     $titulo = "Nuevo mensaje";
 
