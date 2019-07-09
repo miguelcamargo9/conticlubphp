@@ -119,13 +119,35 @@ class UsersController extends BaseController {
   }
   
   public function contactenos(Request $r) {
-    $from = "test@hostinger-tutorials.com";
-    $to = "andre0190@gmail.com";
-    $subject = "Checking PHP mail";
-    $message = "PHP mail works just fine";
-    $headers = "From:" . $from;
-    mail($to,$subject,$message, $headers);
-    echo "The email message was sent.";
+    $infoUser = $r->user();
+    $datos = json_decode($r->getContent(), true);
+    $datos['uname']=$infoUser->name;  
+    
+    $cabeceras = 'MIME-Version: 1.0' . "\r\n";
+    $cabeceras .= 'Content-type: text/html; charset=utf-8' . "\r\n";
+    $cabeceras .= "From: $infoUser->name <{$infoUser->name}>" . "\r\n";
+    
+    $mensaje = "<html>
+          <head>
+              <title>Contacto</title>
+          </head>
+          <body>
+              <h2>Nuevo mensaje</h2>
+              El usuario: {$datos['uname']} se contacta para lo siguiente:{$datos['asunto']}
+              <br>
+              <h3>Mensaje:</h3>{$datos['mensaje']}
+              <br>
+              <p>{$datos['mensaje']}</p>
+
+          </body>
+      </html>";
+
+    $para = "andre0190@gmail.com";
+
+    $titulo = "Nuevo mensaje";
+
+    return (mail($para, $titulo, $mensaje, $cabeceras))? ["message" => "success"] : ["message" => "error"];
+    
   }
 
 }
