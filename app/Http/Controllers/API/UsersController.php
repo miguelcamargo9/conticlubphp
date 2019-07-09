@@ -7,7 +7,7 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
-use App\Mail\contactenos;
+use App\Mail\Contactenos;
 use Illuminate\Support\Facades\Mail;
 //MODELOS
 use App\User;
@@ -117,37 +117,11 @@ class UsersController extends BaseController {
     $user = User::with("invoices.invoiceReferences")->with("invoices.points")->find($id);
     return $user;
   }
-  
+
   public function contactenos(Request $r) {
     $infoUser = $r->user();
     $datos = json_decode($r->getContent(), true);
-    $datos['uname']=$infoUser->name;  
-    
-    $cabeceras = 'MIME-Version: 1.0' . "\r\n";
-    $cabeceras .= 'Content-type: text/html; charset=utf-8' . "\r\n";
-    $cabeceras .= "From: $infoUser->name <{$infoUser->email}>" . "\r\n";
-    
-    $mensaje = "<html>
-          <head>
-              <title>Contacto</title>
-          </head>
-          <body>
-              <h2>Nuevo mensaje</h2>
-              El usuario: {$datos['uname']} se contacta para lo siguiente:{$datos['asunto']}
-              <br>
-              <h3>Mensaje:</h3>{$datos['mensaje']}
-              <br>
-              <p>{$datos['mensaje']}</p>
-
-          </body>
-      </html>";
-
-    $para = "andre0190@gmail.com,miguelcamargo9@gmail.com";
-
-    $titulo = "Nuevo mensaje";
-
-    return (mail($para, $titulo, $mensaje, $cabeceras))? ["message" => "success"] : ["message" => "error"];
-    
+    $datos['uname'] = $infoUser->name;
+    Mail::to("miguelcamargo9@gmail.com")->send(new Contactenos($datos));
   }
-
 }
