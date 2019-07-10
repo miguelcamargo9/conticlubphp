@@ -114,7 +114,7 @@ class UsersController extends BaseController {
 
   //HISTORIA DE REGISTROS DE FACTURAS
   public function historyInvoice($id) {
-    $user = User::with("invoices.invoiceReferences")->with("invoices.points")->find($id);
+    $user = User::with("invoices.invoiceReferences.rin.design.brand")->with("invoices.points")->find($id);
     return $user;
   }
 

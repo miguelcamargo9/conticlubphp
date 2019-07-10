@@ -107,7 +107,7 @@ class InvoiceController extends BaseController {
   }
   
   public function get() {
-    $facturas = Invoice::with("user:id,name")->get();
+    $facturas = Invoice::with("user:id,name")->with("invoiceReferences.rin.design.brand")->with("points")->get();
     return $facturas;
   }
 

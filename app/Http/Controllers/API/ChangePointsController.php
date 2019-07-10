@@ -156,19 +156,32 @@ class ChangePointsController extends BaseController {
 
   //RETORNAR TODAS LAS SOLICITUDES QUE SE HAN HECHO
   public function all() {
-    $change = ChangePoints::with("product")->with("user")->get();
+  $change = ChangePoints::with("product")->with(
+    [
+      "user"=>function($q){$q->select(["id","name",'subsidiary_id']);},
+      "user.subsidiary"=>function($p){$p->select(["id","name","cities_id"]);},
+      "user.subsidiary.city"=>function($p){$p->select(["id","name"]);}
+    ])->get();
     return $change;
   }
 
   //RETORNAR TODAS LAS SOLICITUDES DE UN USUARIO
   public function GetbyUser($idUser) {
-    $change = ChangePoints::with("product")->with("user")->where("users_id", $idUser)->get();
+    $change = ChangePoints::with("product")->with([
+      "user"=>function($q){$q->select(["id","name",'subsidiary_id']);},
+      "user.subsidiary"=>function($p){$p->select(["id","name","cities_id"]);},
+      "user.subsidiary.city"=>function($p){$p->select(["id","name"]);}
+    ])->where("users_id", $idUser)->get();
     return $change;
   }
 
   //RETORNAR TODAS LAS SOLICITUDES DE UN USUARIO
   public function get($id) {
-    $change = ChangePoints::with("product")->with("user")->find($id);
+    $change = ChangePoints::with("product")->with([
+      "user"=>function($q){$q->select(["id","name",'subsidiary_id']);},
+      "user.subsidiary"=>function($p){$p->select(["id","name","cities_id"]);},
+      "user.subsidiary.city"=>function($p){$p->select(["id","name"]);}
+    ])->find($id);
     return $change;
   }
 
