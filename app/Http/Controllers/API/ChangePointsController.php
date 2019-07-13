@@ -178,7 +178,7 @@ class ChangePointsController extends BaseController {
   //RETORNAR TODAS LAS SOLICITUDES DE UN USUARIO
   public function get($id) {
     $change = ChangePoints::with("product")->with([
-      "user"=>function($q){$q->select(["id","name",'subsidiary_id']);},
+      "user"=>function($q){$q->select(["id","name",'subsidiary_id','identification_number','points']);},
       "user.subsidiary"=>function($p){$p->select(["id","name","cities_id"]);},
       "user.subsidiary.city"=>function($p){$p->select(["id","name"]);}
     ])->find($id);
