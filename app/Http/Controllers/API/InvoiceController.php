@@ -113,7 +113,7 @@ class InvoiceController extends BaseController {
 
   //Get an existing invoice
   public function get($id) {
-    $invoice = Invoice::find($id)->with("user:id,name")->with("invoiceReferences.rin.design.brand")->with("points");
+    $invoice = Invoice::with("user:id,name")->with("invoiceReferences.rin.design.brand")->with("points")->find($id);
     return $invoice;
   }
 
