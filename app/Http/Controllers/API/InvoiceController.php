@@ -106,9 +106,15 @@ class InvoiceController extends BaseController {
     return ($save) ? ["message" => "success","currentPoints"=>$user->points,"points"=>$totalPoints] : ["message" => "error"];
   }
   
-  public function get() {
+  public function all() {
     $facturas = Invoice::with("user:id,name")->with("invoiceReferences.rin.design.brand")->with("points")->get();
     return $facturas;
+  }
+
+  //Get an existing invoice
+  public function get($id) {
+    $invoice = Invoice::find($id)->with("user:id,name")->with("invoiceReferences.rin.design.brand")->with("points");
+    return $invoice;
   }
 
 }
