@@ -16,10 +16,14 @@ class SlidesController extends BaseController {
 
   public function create(Request $r) {
     
-    //$infoProduct = json_decode($r->getContent(), true);
+    $infoSlide = json_decode(Input::post("data"), true);
     $mainImage = $r->file('image');
     
     $newSlide = new Slides();
+    foreach ($infoSlide as $column=>$value){
+      $newSlide->$column = $value;
+    }
+    
     $newSlide->path = "";
     
     if($newSlide->save()){
