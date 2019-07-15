@@ -16,43 +16,63 @@ class SlidesController extends BaseController {
   }
 
   public function create(Request $r) {
-    
+
     $infoSlide = json_decode(Input::post("data"), true);
     $mainImage = $r->file('image');
-    
+
     $newSlide = new Slides();
-    foreach ($infoSlide as $column=>$value){
+    foreach ($infoSlide as $column => $value) {
       $newSlide->$column = $value;
     }
-    
+
     $newSlide->path = "";
-    
-    if($newSlide->save()){
-      $path = public_path()."/slides/";
-      
+
+    if ($newSlide->save()) {
+      $path = public_path() . "/slides/";
+
       $nameSlideFile = "slide_{$newSlide->id}.{$mainImage->getClientOriginalExtension()}";
       $mainImage->move($path, "$nameSlideFile");
       //actualizar y guardar la imagen del registro
       $newSlide->path = "/slides/$nameSlideFile";
       $newSlide->update();
-    
     }
-    return ["message"=>"success"];
+    return ["message" => "success"];
   }
-  
-   ///OBTENER UN SLIDE EXISTENTE
+
+  //OBTENER UN SLIDE EXISTENTE
   public function get($id) {
     $slide = Slides::find($id);
     return $slide;
   }
   
-  public function update($id){
-    $slide = Slides::find($id);
-    $slide->show = ($slide->show === 0) ? 1 : 0;
-    $slide->save();
-    return $slide;
+  //OBTENER UN SLIDE EXISTENTE
+  public function getByPosition($position) {
+    $slides = Slides::where("show","1")->where("position",$position)->get();
+    return $slides;
   }
-  
+
+  //ACTUALZIA UN SLIDE
+  public function update($id, Request $request) {
+    $data = json_decode(Input::post("data"), true);
+
+    $slide = Slides::find($id);
+
+    foreach ($data as $column => $value) {
+      $slide->$column = $value;
+    }
+    if ($request->hasfile('image')) {
+      $img = $request->file('image');
+      $path = public_path() . "/slides/";
+
+      $nameSlideFile = "slide_{$slide->id}.{$img->getClientOriginalExtension()}";
+      unlink("/slides/$nameSlideFile");
+      $img->move($path, "$nameSlideFile");
+      //actualizar y guardar la imagen del registro
+      $slide->path = "/slides/$nameSlideFile";
+    }
+    return( $slide->update()) ? ["message" => "success"] : ["message" => "error"];
+  }
+
   //DELETE A SLIDE
   public function delete($id) {
     $slide = Slides::find($id);

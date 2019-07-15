@@ -86,6 +86,7 @@ Route::group(['middleware' => ['auth:api']], function($router) {
   Route::get("slides/get/{id}", 'API\SlidesController@get');
   Route::put("slides/update/{id}", 'API\SlidesController@update');
   Route::delete("slides/delete/{id}", 'API\SlidesController@delete');
+  Route::get("slides/position/{position}", 'API\SlidesController@getByPosition');
 
   //RINES
   Route::get("rin/all", 'API\RinController@all');
