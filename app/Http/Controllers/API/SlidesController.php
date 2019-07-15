@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
 //MODELOS
 use App\Models\Slides;
 
