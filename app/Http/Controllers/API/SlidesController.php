@@ -47,5 +47,17 @@ class SlidesController extends BaseController {
     $slide->save();
     return $slide;
   }
+  
+  //DELETE A SLIDE
+  public function delete($id) {
+    $slide = Slides::find($id);
+    try {
+      $slide->delete();
+      return["message" => "success"];
+    } catch (\Illuminate\Database\QueryException $e) {
+      $error = $e->errorInfo;
+      return ($error[0] == "23000") ? ["message" => "error", "detail" => "Este slide se esta usando en otros registros. Por favor verifique que este slide se pueda eliminar"] : ["message" => "error", "detail" => $error[2]];
+    }
+  }
 
 }
