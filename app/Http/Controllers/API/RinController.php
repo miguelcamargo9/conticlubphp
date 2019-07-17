@@ -98,7 +98,7 @@ class RinController extends BaseController {
 
   //RETORNAR UN RIN  POR DISEÑO
   public function getByDesign($idDesign) {
-    $desing = Rin::where("design_id", "=", $idDesign)->get();
+    $desing = Rin::where("design_id", "=", $idDesign)->orderBy('name', 'ASC')->get();
     return $desing;
   }
 
