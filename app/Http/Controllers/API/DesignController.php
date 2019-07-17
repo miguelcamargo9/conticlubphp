@@ -92,7 +92,7 @@ class DesignController {
   
   //RETORNAR UN DISEÑO POR MARCA
   public function getByBrand($idBrand) {
-    $desing = Design::where("brand_id","=",$idBrand)->get();
+    $desing = Design::where("brand_id","=",$idBrand)->orderBy('name', 'ASC')->get();
     return $desing;
   }
 
