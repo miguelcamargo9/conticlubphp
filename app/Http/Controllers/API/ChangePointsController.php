@@ -143,7 +143,7 @@ class ChangePointsController extends BaseController {
 
       //LE DEVUELVO LOS PUNTOS AL USUARIO
       $client = User::find($change->users_id);
-      $client->points = $user->points + $change->points;
+      $client->points = $client->points + $change->points;
       $client->update();
 
       //ACTUALIZO LA SOLICITUD DE CAMBIO DE PUNTOS POR PRODUCTOS
