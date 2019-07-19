@@ -102,10 +102,12 @@ class ChangePointsController extends BaseController {
 
             $state = "partial";
           } elseif ($complete == 0) {
+            $newPoints = 0;
             $pointsComplete = true;
             $pointsSave = $p;
             $state = "used";
           } else {
+            $newPoints = 0;
             $pointsSave = $p;
             $pintsProduct = $complete;
             $state = "used";
