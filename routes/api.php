@@ -97,7 +97,7 @@ Route::group(['middleware' => ['auth:api']], function($router) {
   Route::get("rin/byDesign/{idDesign}", 'API\RinController@getByDesign');
 
   //INVOICES
-  Route::post("invoice/all", 'API\InvoiceController@all');
+  Route::get("invoice/all", 'API\InvoiceController@all');
   Route::post("invoice/create", 'API\InvoiceController@create');
   Route::get("invoice/get/{id}", 'API\InvoiceController@get');
   Route::post("invoice/rejected/{id}", 'API\InvoiceController@rejected');
