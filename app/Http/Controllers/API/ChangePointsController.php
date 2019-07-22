@@ -73,7 +73,7 @@ class ChangePointsController extends BaseController {
     $user = $r->user();
     if ($user->profiles_id == 4) {
       $info = json_decode($r->getContent(), true);
-      $pointsUser = User::where("users.id", $change->users_id)->where('points.state', '!=', "expired")->where('points.state', '!=', "used")
+      $pointsUser = User::where("users.id", $change->users_id)->where('points.state', '=', "complete")->where('points.state', '=', "partial")
               ->leftJoin('invoice', 'invoice.users_id', '=', 'users.id')
               ->leftJoin('points', [['points.invoice_id', '=', 'invoice.id']])
               ->select('points.points as puntos', 'invoice.id as factura', 'points.id as points_id')
