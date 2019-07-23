@@ -115,7 +115,7 @@ class ChangePointsController extends BaseController {
           if (!$this->updateHistoryPoints($idPoints, $state, $pointsSave, $newPoints)) {
             $saveOK = false;
           } else {
-            $change->comment = ($info['comment'] != null) ? $info['comment'] != null : "-";
+            $change->comment = ($info['comment'] != null) ? $info['comment'] : null;
             $change->state = "aprobado";
             $change->approver_id = $user->id;
             ($change->update()) ? DB::commit() : $saveOK = false;
