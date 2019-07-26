@@ -106,6 +106,7 @@ Route::group(['middleware' => ['auth:api']], function($router) {
   Route::post("product/applyfor", 'API\ChangePointsController@applyFor');
   Route::post("product/approve/{id}", 'API\ChangePointsController@approve');
   Route::post("product/reject/{id}", 'API\ChangePointsController@reject');
+  Route::post("product/buyed/{id}", 'API\ChangePointsController@buyed');
   Route::get("product/applyfor/all", 'API\ChangePointsController@all');
   Route::get("product/applyfor/getbyuser/{id}", 'API\ChangePointsController@GetbyUser');
   Route::get("product/applyfor/get/{id}", 'API\ChangePointsController@get');

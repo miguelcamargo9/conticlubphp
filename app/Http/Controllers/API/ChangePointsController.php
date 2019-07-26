@@ -73,7 +73,7 @@ class ChangePointsController extends BaseController {
     $user = $r->user();
     if ($user->profiles_id == 4) {
       $info = json_decode($r->getContent(), true);
-      $pointsUser = User::where("users.id", $change->users_id)->where('points.state', '=', "complete")->whereOr('points.state', '=', "partial")
+      $pointsUser = User::where("users.id", $change->users_id)->where('points.state', '=', "complete")->orWhere('points.state', '=', "partial")
               ->leftJoin('invoice', 'invoice.users_id', '=', 'users.id')
               ->leftJoin('points', [['points.invoice_id', '=', 'invoice.id']])
               ->select('points.points as puntos', 'invoice.id as factura', 'points.id as points_id')
@@ -84,7 +84,7 @@ class ChangePointsController extends BaseController {
       $count = 0;
       $pointsComplete = false;
       $saveOK = true;
-
+      
       if (!empty($pointsUser)) {
         //RECORRO LOS PUNTOS QUE TIENE EL USUARIO PARA EMPEZAR A DECONTAR
         while (!$pointsComplete) {
@@ -185,6 +185,27 @@ class ChangePointsController extends BaseController {
       "user.subsidiary.city"=>function($p){$p->select(["id","name"]);}
     ])->find($id);
     return $change;
+  }
+  
+    //RECHAZAR EL CAMBIO DE PUNTOS POR UN PRODUCTO
+  public function buyed($id, Request $r) {
+    $change = ChangePoints::find($id);
+    $user = $r->user();
+
+    if ($user->profiles_id == 5) {
+      $info = json_decode($r->getContent(), true);
+
+
+      //ACTUALIZO LA SOLICITUD DE CAMBIO DE PUNTOS POR PRODUCTOS
+      $change->buyer_comment = $info['buyer_comment'];
+      $change->	purchase_date = $info['purchase_date'];
+      $change->	guide_number = $info['guide_number'];
+      $change->state = "comprado";
+      $change->buyer_id = $user->id;
+      return ($change->update()) ? ["message" => "success"] : ["message" => "error"];
+    } else {
+      return["message" => "No tiene permitodo hacer esta acción"];
+    }
   }
 
 }
