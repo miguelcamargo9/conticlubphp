@@ -199,7 +199,6 @@ class ChangePointsController extends BaseController {
       //ACTUALIZO LA SOLICITUD DE CAMBIO DE PUNTOS POR PRODUCTOS
       $change->buyer_comment = $info['buyer_comment'];
       $change->	purchase_date = $info['purchase_date'];
-      $change->	guide_number = $info['guide_number'];
       $change->state = "comprado";
       $change->buyer_id = $user->id;
       return ($change->update()) ? ["message" => "success"] : ["message" => "error"];
