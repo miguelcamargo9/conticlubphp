@@ -1,18 +1,3 @@
-<html>
-    <head>
-        <title>Contacto</title>
-    </head>
-    <body>
-        <h2>Nuevo mensaje</h2>
-        El usuario: {{$data['uname']}} se contacta para lo siguiente:{{$data['asunto']}}
-        <br>
-        <h3>Mensaje:</h3>
-        <br>
-        <p>{{$data['mensaje']}}</p>
-
-    </body>
-</html>
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
