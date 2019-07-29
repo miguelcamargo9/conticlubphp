@@ -130,4 +130,40 @@ class UsersController extends BaseController {
       return ["message" => "success"];
     }
   }
+  
+  private function randomPassword() {
+        $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        $pass = array(); //remember to declare $pass as an array
+        $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+        for ($i = 0; $i < 6; $i++) {
+            $n = rand(0, $alphaLength);
+            $pass[] = $alphabet[$n];
+        }
+        return implode($pass); //turn the array into a string
+    }
+  
+  //RECUPERAR UNA CONTRASEÑA
+  public function recover(Request $r) {
+      $data  = json_decode($r->getContent(), true);
+      $user = User::where([["email"=>$data['email']],["identification_number"=>$data['identification_number']]])->get();
+      $exitUser = User::where([["email"=>$data['email']],["identification_number"=>$data['identification_number']]])->count();
+      if($exitUser>0){
+            try {
+            $datos['name'] = $user->name;
+            $datos['passwd'] = $this->randomPassword();
+            $user->password = bcrypt($datos['passwd']);
+            if($user->update()){
+                Mail::to($user->email)->send(new Recover($datos));
+                return ["message" => "success"];
+            }else{
+                return ["message" => "error"];
+            }
+          } catch (Exception $e) {
+            return ["message" => "error"];
+          }
+      }else{
+          return ["message" => "error","detail"=>"No se encontro usuario con esos datos"];
+      }
+  }
+  
 }

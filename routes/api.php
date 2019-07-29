@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
  */
 Route::post('login', 'API\AccessTokenController@issueToken');
 Route::get("perro", 'API\TestController@dog');
+//RECUPERAR CONTRASEÑA DEL USUARIO
+Route::post("users/recover", 'API\UsersController@recover');
 //RUTAS PARA EL ADMINISTRADOR
 Route::group(['middleware' => ['auth:api']], function($router) {
 
