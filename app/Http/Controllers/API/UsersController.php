@@ -123,8 +123,8 @@ class UsersController extends BaseController {
     $datos = json_decode($r->getContent(), true);
     $datos['uname'] = $infoUser->name;
     try {
-      Mail::to("miguelcamargo9@gmail.com")->send(new Contactenos($datos));
-//      Mail::to("conticlub@lupdup.com, carloslopez@introcrea.com")->send(new Contactenos($datos));
+//      Mail::to("miguelcamargo9@gmail.com")->send(new Contactenos($datos));
+      Mail::to("conticlub@lupdup.com, carloslopez@introcrea.com")->send(new Contactenos($datos));
       return ["message" => "success"];
     } catch (Exception $e) {
       return ["message" => "success"];
