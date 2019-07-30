@@ -145,7 +145,7 @@ class UsersController extends BaseController {
   //RECUPERAR UNA CONTRASEÑA
   public function recover(Request $r) {
       $data  = json_decode($r->getContent(), true);
-      $user = User::where([["email"=>$data['email']],["identification_number"=>$data['identification_number']]])->get();
+      $user = User::where([["email",$data['email']],["identification_number",$data['identification_number']]])->get();
       $exitUser = User::where([["email"=>$data['email']],["identification_number"=>$data['identification_number']]])->count();
       if($exitUser>0){
             try {
