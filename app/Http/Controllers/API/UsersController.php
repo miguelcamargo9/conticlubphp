@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use App\Mail\Contactenos;
+use App\Mail\Recover;
 use Illuminate\Support\Facades\Mail;
 //MODELOS
 use App\User;
@@ -145,7 +146,7 @@ class UsersController extends BaseController {
   //RECUPERAR UNA CONTRASEÑA
   public function recover(Request $r) {
       $data  = json_decode($r->getContent(), true);
-      $user = User::where([["email",$data['email']],["identification_number",$data['identification_number']]])->get();
+      $user = User::where([["email",$data['email']],["identification_number",$data['identification_number']]])->first();
       $exitUser = User::where([["email",$data['email']],["identification_number",$data['identification_number']]])->count();
       if($exitUser>0){
             try {
