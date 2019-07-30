@@ -155,7 +155,6 @@ class UsersController extends BaseController {
             $user->password = bcrypt($datos['passwd']);
             if($user->update()){
                 $email = Mail::to($user->email)->send(new Recover($datos));
-                print_r($email);
                 return ["message" => "success"];
             }else{
                 return ["message" => "error"];
