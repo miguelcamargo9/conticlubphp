@@ -35,8 +35,9 @@ class InvoiceController extends BaseController {
     }
     try {
       if ($invoice->save()) {
+        $idInvoice = $invoice->id;
         if ($r->hasfile('image')) {
-          $idInvoice = $invoice->id;
+          
           $path = public_path() . "/invoices/{$idInvoice}";
 
           $nomeMainOmg = $image->getClientOriginalName();

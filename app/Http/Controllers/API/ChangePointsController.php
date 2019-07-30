@@ -12,6 +12,7 @@ Use App\User;
 Use App\Points;
 use App\PointsMovements;
 use App\PointsMovimentsDetail;
+use App\Invoice;
 
 class ChangePointsController extends BaseController {
 
@@ -36,7 +37,7 @@ class ChangePointsController extends BaseController {
   }
 
   //ACTUALIZAR EL HISTORIAL DE LOS PUNTOS
-  private function updateHistoryPoints($idPoints, $state, $totalPoints, $newPoints = null) {
+  private function updateHistoryPoints($idPoints, $state, $totalPoints, $newPoints = null,$idInvoice) {
 
     //ACTUALIZO EL REGISTRO DE LOS PUNTOS
     DB::beginTransaction();
@@ -59,11 +60,22 @@ class ChangePointsController extends BaseController {
         $pointsMovimentsDetail->points_id = $idPoints;
         $pointsMovimentsDetail->points_movements_id = $pointsMovements->id;
         $pointsMovimentsDetail->save();
+        //ACTUALIZO LA FACTURA
+        $invoice = Invoice::find($idInvoice);
+        switch ($state){
+          case "partial":
+            $iState = "Parcial";
+            break;
+          case "used":
+            $iState="Usada";
+        }
+        $invoice->state = $iState;
+        $invoice->update();
       }
       //DB::commit();
       return true;
     } catch (Exception $e) {
-      //DB::rollback();
+      DB::rollback();
       return false;
     }
   }
@@ -87,6 +99,7 @@ class ChangePointsController extends BaseController {
       
       if (!empty($pointsUser)) {
         //RECORRO LOS PUNTOS QUE TIENE EL USUARIO PARA EMPEZAR A DECONTAR
+        $idInvoice = $pointsUser[$count]['factura'];
         while (!$pointsComplete) {
           $p = $pointsUser[$count]['puntos'];
           $idPoints = $pointsUser[$count]['points_id'];
@@ -112,7 +125,7 @@ class ChangePointsController extends BaseController {
             $pintsProduct = $complete;
             $state = "used";
           }
-          if (!$this->updateHistoryPoints($idPoints, $state, $pointsSave, $newPoints)) {
+          if (!$this->updateHistoryPoints($idPoints, $state, $pointsSave, $newPoints,$idInvoice)) {
             $saveOK = false;
           } else {
             $change->comment = ($info['comment'] != null) ? $info['comment'] : null;
