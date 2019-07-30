@@ -9,7 +9,7 @@ Use App\User;
 class RerportController {
   
   function invoicesByUsers() {
-    $users = User::select(['id', 'name','points','subsidiary_id'])->withCount("invoices")->with("subsidiary:id,name")->where("subsidiary_id","!=","null")->get();
+    $users = User::select(['id', 'name','points','subsidiary_id'])->withCount("invoices")->with("subsidiary.city")->where("subsidiary_id","!=","null")->get();
     foreach ($users as $num=>$user) {
       $invByUser = "SELECT id FROM points WHERE invoice_id IN (SELECT id FROM invoice WHERE users_id = $user->id)";
       $movByInv = "SELECT points_movements_id FROM points_moviments_detail WHERE points_id IN ($invByUser)";
