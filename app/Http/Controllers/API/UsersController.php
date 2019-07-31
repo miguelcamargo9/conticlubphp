@@ -151,6 +151,7 @@ class UsersController extends BaseController {
       if($exitUser>0){
             try {
             $datos['name'] = $user->name;
+            $datos['cc'] = $user->identification_number;
             $datos['passwd'] = $this->randomPassword();
             $user->password = bcrypt($datos['passwd']);
             if($user->update()){
