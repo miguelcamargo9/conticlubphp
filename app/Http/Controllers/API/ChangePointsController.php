@@ -37,15 +37,13 @@ class ChangePointsController extends BaseController {
   }
 
   //ACTUALIZAR EL HISTORIAL DE LOS PUNTOS
-  private function updateHistoryPoints($idPoints, $state, $totalPoints, $newPoints = null,$idInvoice) {
+  private function updateHistoryPoints($idPoints, $state, $totalPoints, $newPoints,$idInvoice) {
 
     //ACTUALIZO EL REGISTRO DE LOS PUNTOS
     DB::beginTransaction();
     try {
       $point = Points::find($idPoints);
-      if ($newPoints != null) {
-        $point->points = $newPoints;
-      }
+      $point->points = $newPoints;
       $point->state = $state;
       $point->update();
 
@@ -124,7 +122,7 @@ class ChangePointsController extends BaseController {
             $pointsSave = $p;
             $pintsProduct = $complete;
             $state = "used";
-          }
+          }          
           if (!$this->updateHistoryPoints($idPoints, $state, $pointsSave, $newPoints,$idInvoice)) {
             $saveOK = false;
           } else {
