@@ -90,9 +90,7 @@ class ChangePointsController extends BaseController {
                       ->leftJoin('invoice', 'invoice.users_id', '=', 'users.id')
                       ->leftJoin('points', [['points.invoice_id', '=', 'invoice.id']])
                       ->select('points.points as puntos', 'invoice.id as factura', 'points.id as points_id')
-                      ->orderBy('points.created_at', 'asc')->toSql();
-      dd($pointsUser);
-
+                      ->orderBy('points.created_at', 'asc')->get()->toArray();
 
       $pintsProduct = $change->points;
       $count = 0;
@@ -101,8 +99,8 @@ class ChangePointsController extends BaseController {
 
       if (!empty($pointsUser)) {
         //RECORRO LOS PUNTOS QUE TIENE EL USUARIO PARA EMPEZAR A DECONTAR
-        $idInvoice = $pointsUser[$count]['factura'];
         while (!$pointsComplete) {
+          $idInvoice = $pointsUser[$count]['factura'];
           $p = $pointsUser[$count]['puntos'];
           $idPoints = $pointsUser[$count]['points_id'];
           $complete = $pintsProduct - $p;
