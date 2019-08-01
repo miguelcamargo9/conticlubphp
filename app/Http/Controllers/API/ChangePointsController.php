@@ -91,7 +91,7 @@ class ChangePointsController extends BaseController {
                       ->leftJoin('points', [['points.invoice_id', '=', 'invoice.id']])
                       ->select('points.points as puntos', 'invoice.id as factura', 'points.id as points_id')
                       ->orderBy('points.created_at', 'asc')->toSql();
-      dd($results);
+      dd($pointsUser);
 
 
       $pintsProduct = $change->points;
