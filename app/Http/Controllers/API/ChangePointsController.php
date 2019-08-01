@@ -66,6 +66,9 @@ class ChangePointsController extends BaseController {
             break;
           case "used":
             $iState="Usada";
+            break;
+          default :
+            break;
         }
         $invoice->state = $iState;
         $invoice->update();
