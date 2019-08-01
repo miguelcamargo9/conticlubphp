@@ -37,7 +37,7 @@ class ChangePointsController extends BaseController {
   }
 
   //ACTUALIZAR EL HISTORIAL DE LOS PUNTOS
-  private function updateHistoryPoints($idPoints, $state, $totalPoints, $newPoints,$idInvoice) {
+  private function updateHistoryPoints($idPoints, $state, $totalPoints, $newPoints, $idInvoice) {
 
     //ACTUALIZO EL REGISTRO DE LOS PUNTOS
     DB::beginTransaction();
@@ -60,12 +60,12 @@ class ChangePointsController extends BaseController {
         $pointsMovimentsDetail->save();
         //ACTUALIZO LA FACTURA
         $invoice = Invoice::find($idInvoice);
-        switch ($state){
+        switch ($state) {
           case "partial":
             $iState = "Parcial";
             break;
           case "used":
-            $iState="Usada";
+            $iState = "Usada";
             break;
           default :
             break;
@@ -87,17 +87,18 @@ class ChangePointsController extends BaseController {
     if ($user->profiles_id == 4) {
       $info = json_decode($r->getContent(), true);
       $pointsUser = User::where("users.id", $change->users_id)->where('points.state', '=', "complete")->orWhere('points.state', '=', "partial")
-              ->leftJoin('invoice', 'invoice.users_id', '=', 'users.id')
-              ->leftJoin('points', [['points.invoice_id', '=', 'invoice.id']])
-              ->select('points.points as puntos', 'invoice.id as factura', 'points.id as points_id')
-              ->orderBy('points.created_at', 'asc')->get()->toArray();
+                      ->leftJoin('invoice', 'invoice.users_id', '=', 'users.id')
+                      ->leftJoin('points', [['points.invoice_id', '=', 'invoice.id']])
+                      ->select('points.points as puntos', 'invoice.id as factura', 'points.id as points_id')
+                      ->orderBy('points.created_at', 'asc')->toSql();
+      dd($results);
 
-      
+
       $pintsProduct = $change->points;
       $count = 0;
       $pointsComplete = false;
       $saveOK = true;
-      
+
       if (!empty($pointsUser)) {
         //RECORRO LOS PUNTOS QUE TIENE EL USUARIO PARA EMPEZAR A DECONTAR
         $idInvoice = $pointsUser[$count]['factura'];
@@ -113,7 +114,6 @@ class ChangePointsController extends BaseController {
             $newPoints = ($complete * (-1));
             $pointsSave = $p - $newPoints;
             $pointsComplete = true;
-
             $state = "partial";
           } elseif ($complete == 0) {
             $newPoints = 0;
@@ -125,8 +125,8 @@ class ChangePointsController extends BaseController {
             $pointsSave = $p;
             $pintsProduct = $complete;
             $state = "used";
-          }          
-          if (!$this->updateHistoryPoints($idPoints, $state, $pointsSave, $newPoints,$idInvoice)) {
+          }
+          if (!$this->updateHistoryPoints($idPoints, $state, $pointsSave, $newPoints, $idInvoice)) {
             $saveOK = false;
           } else {
             $change->comment = ($info['comment'] != null) ? $info['comment'] : null;
@@ -138,10 +138,10 @@ class ChangePointsController extends BaseController {
         }
         return($saveOK) ? ["message" => "success"] : ["message" => "error"];
       } else {
-        return["message" => "error","detail"=>"No se encontraron facturas del usuario"];
+        return["message" => "error", "detail" => "No se encontraron facturas del usuario"];
       }
-    }else{
-      
+    } else {
+
       return["message" => "No tiene permitodo hacer esta acción"];
     }
     //print_r($pointsUser);
@@ -172,36 +172,54 @@ class ChangePointsController extends BaseController {
 
   //RETORNAR TODAS LAS SOLICITUDES QUE SE HAN HECHO
   public function all() {
-  $change = ChangePoints::with("product")->with(
-    [
-      "user"=>function($q){$q->select(["id","name",'subsidiary_id','identification_number','points']);},
-      "user.subsidiary"=>function($p){$p->select(["id","name","cities_id"]);},
-      "user.subsidiary.city"=>function($p){$p->select(["id","name"]);}
-    ])->get();
+    $change = ChangePoints::with("product")->with(
+                    [
+                        "user" => function($q) {
+                          $q->select(["id", "name", 'subsidiary_id', 'identification_number', 'points']);
+                        },
+                        "user.subsidiary" => function($p) {
+                          $p->select(["id", "name", "cities_id"]);
+                        },
+                        "user.subsidiary.city" => function($p) {
+                          $p->select(["id", "name"]);
+                        }
+            ])->get();
     return $change;
   }
 
   //RETORNAR TODAS LAS SOLICITUDES DE UN USUARIO
   public function GetbyUser($idUser) {
     $change = ChangePoints::with("product")->with([
-      "user"=>function($q){$q->select(["id","name",'subsidiary_id','identification_number','points']);},
-      "user.subsidiary"=>function($p){$p->select(["id","name","cities_id"]);},
-      "user.subsidiary.city"=>function($p){$p->select(["id","name"]);}
-    ])->where("users_id", $idUser)->get();
+                "user" => function($q) {
+                  $q->select(["id", "name", 'subsidiary_id', 'identification_number', 'points']);
+                },
+                "user.subsidiary" => function($p) {
+                  $p->select(["id", "name", "cities_id"]);
+                },
+                "user.subsidiary.city" => function($p) {
+                  $p->select(["id", "name"]);
+                }
+            ])->where("users_id", $idUser)->get();
     return $change;
   }
 
   //RETORNAR TODAS LAS SOLICITUDES DE UN USUARIO
   public function get($id) {
     $change = ChangePoints::with("product")->with([
-      "user"=>function($q){$q->select(["id","name",'subsidiary_id','identification_number','points']);},
-      "user.subsidiary"=>function($p){$p->select(["id","name","cities_id"]);},
-      "user.subsidiary.city"=>function($p){$p->select(["id","name"]);}
-    ])->find($id);
+                "user" => function($q) {
+                  $q->select(["id", "name", 'subsidiary_id', 'identification_number', 'points']);
+                },
+                "user.subsidiary" => function($p) {
+                  $p->select(["id", "name", "cities_id"]);
+                },
+                "user.subsidiary.city" => function($p) {
+                  $p->select(["id", "name"]);
+                }
+            ])->find($id);
     return $change;
   }
-  
-    //RECHAZAR EL CAMBIO DE PUNTOS POR UN PRODUCTO
+
+  //RECHAZAR EL CAMBIO DE PUNTOS POR UN PRODUCTO
   public function buyed($id, Request $r) {
     $change = ChangePoints::find($id);
     $user = $r->user();
@@ -212,7 +230,7 @@ class ChangePointsController extends BaseController {
 
       //ACTUALIZO LA SOLICITUD DE CAMBIO DE PUNTOS POR PRODUCTOS
       $change->buyer_comment = $info['buyer_comment'];
-      $change->	purchase_date = $info['purchase_date'];
+      $change->purchase_date = $info['purchase_date'];
       $change->state = "comprado";
       $change->buyer_id = $user->id;
       return ($change->update()) ? ["message" => "success"] : ["message" => "error"];
