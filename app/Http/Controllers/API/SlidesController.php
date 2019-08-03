@@ -46,8 +46,8 @@ class SlidesController extends BaseController {
   }
   
   //OBTENER UN SLIDE EXISTENTE
-  public function getByPosition($position) {
-    $slides = Slides::where("show","1")->where("position",$position)->get();
+  public function getByPosition($position, $responsive) {
+    $slides = Slides::where("show","1")->where("position",$position)->where("responsive",$responsive)->orderBy('order', 'asc')->get();
     return $slides;
   }
 
