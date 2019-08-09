@@ -107,7 +107,7 @@ class ChangePointsController extends BaseController {
           $state = "";
           $newPoints = null;
           $pointsSave = 0;
-
+          
           if ($complete < 0) {
             $newPoints = ($complete * (-1));
             $pointsSave = $p - $newPoints;
@@ -124,6 +124,9 @@ class ChangePointsController extends BaseController {
             $pintsProduct = $complete;
             $state = "used";
           }
+          echo "PointsUser:{$pintsProduct} Complete: {$complete} Pfactura: {$p} newPointd: {$newPoints} \n";
+          
+          echo "$idPoints, $state, $pointsSave, $newPoints, $idInvoice";
           if (!$this->updateHistoryPoints($idPoints, $state, $pointsSave, $newPoints, $idInvoice)) {
             $saveOK = false;
           } else {
