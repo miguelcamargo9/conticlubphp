@@ -86,7 +86,7 @@ class ChangePointsController extends BaseController {
     $user = $r->user();
     if ($user->profiles_id == 4) {
       $info = json_decode($r->getContent(), true);
-      $pointsUser = User::where("users.id", $change->users_id)->where('points.state', '=', "complete")->orWhere('points.state', '=', "partial")
+      $pointsUser = User::where("users.id", $change->users_id)->where(function($query){$query->where('points.state', '=', "complete")->orWhere('points.state', '=', "partial");})
                       ->leftJoin('invoice', 'invoice.users_id', '=', 'users.id')
                       ->leftJoin('points', [['points.invoice_id', '=', 'invoice.id']])
                       ->select('points.points as puntos', 'invoice.id as factura', 'points.id as points_id')
@@ -124,9 +124,7 @@ class ChangePointsController extends BaseController {
             $pintsProduct = $complete;
             $state = "used";
           }
-          echo "PointsUser:{$pintsProduct} Complete: {$complete} Pfactura: {$p} newPointd: {$newPoints} \n";
           
-          echo "$idPoints, $state, $pointsSave, $newPoints, $idInvoice";
           if (!$this->updateHistoryPoints($idPoints, $state, $pointsSave, $newPoints, $idInvoice)) {
             $saveOK = false;
           } else {
