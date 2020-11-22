@@ -14,11 +14,13 @@ use App\PointsMovements;
 use App\PointsMovimentsDetail;
 use App\RinPointsByProfile;
 use App\User;
-Use App\ChangePoints;
+use App\ChangePoints;
 
-class InvoiceController extends BaseController {
+class InvoiceController extends BaseController
+{
 
-  public function create(Request $r) {
+  public function create(Request $r)
+  {
     $data = json_decode(Input::post("data"), true);
     $rines = json_decode(Input::post("rines"), true);
     $infoUser = $r->user();
@@ -37,7 +39,7 @@ class InvoiceController extends BaseController {
       if ($invoice->save()) {
         $idInvoice = $invoice->id;
         if ($r->hasfile('image')) {
-          
+
           $path = public_path() . "/invoices/{$idInvoice}";
 
           $nomeMainOmg = $image->getClientOriginalName();
@@ -70,7 +72,7 @@ class InvoiceController extends BaseController {
                 $save = false;
               }
             } else {
-              return ["message" => "error", "detail" => "No existe configuracion para el rin: {$rinInfo['rin_id']} o para el perfil: $userProfile"];
+              return ["message" => "error", "detail" => "Esta referencia de llanta no se encuentra activa en ContiClub"];
             }
           }
           if ($save) {
@@ -109,19 +111,22 @@ class InvoiceController extends BaseController {
     return ($save) ? ["message" => "success", "currentPoints" => $user->points, "points" => $totalPoints] : ["message" => "error"];
   }
 
-  public function all() {
+  public function all()
+  {
     $facturas = Invoice::with("user:id,name")->with("invoiceReferences.rin.design.brand")->with("points")->get();
     return $facturas;
   }
 
   //Get an existing invoice
-  public function get($id) {
+  public function get($id)
+  {
     $invoice = Invoice::with("user:id,name")->with("invoiceReferences.rin.design.brand")->with("points")->find($id);
     return $invoice;
   }
 
   //ACTUALIZAR EL HISTORIAL DE LOS PUNTOS
-  private function updateHistoryPoints($idPoints, $state, $totalPoints, $newPoints = null) {
+  private function updateHistoryPoints($idPoints, $state, $totalPoints, $newPoints = null)
+  {
 
     //ACTUALIZO EL REGISTRO DE LOS PUNTOS
     DB::beginTransaction();
@@ -154,7 +159,8 @@ class InvoiceController extends BaseController {
   }
 
   //ENDPOINT FOR REJECTD INVOICE
-  public function rejected($id, Request $r) {
+  public function rejected($id, Request $r)
+  {
 
     $info = json_decode($r->getContent(), true);
     $comment = $info["comment_rejected"];
@@ -171,7 +177,7 @@ class InvoiceController extends BaseController {
 
     //usuario
     $user = User::find($invoice['users_id']);
-  
+
     //TODAS LAS PETICIONES PENDIENTES DEL USUARIO PARA SABER CUATOS PUNTOS TIENE EN TOTAL
     $chageByUser = ChangePoints::where([["users_id", $user->id], ["state", "espera"]])->orderBy("points")->get()->toArray();
 
@@ -190,23 +196,22 @@ class InvoiceController extends BaseController {
       $invoiceUpdate->comment_rejected = $comment;
       //actualizo los puntos del usuario
       $newPointsUSer = $totalPointsUser - $totalPointsInvoice;
-      
+
       //SI NO ALCANZAN LOS NUEVOS PUNTOS DEL USUARIO, RECHAZO AUTOMATICAMENTE LA SOLICITUD DE PRODUCTO
       foreach ($chageByUser as $ch) {
-        if(($newPointsUSer - $ch['points'])>=0 ){
+        if (($newPointsUSer - $ch['points']) >= 0) {
           $newPointsUSer -= $ch['points'];
-        }else{
+        } else {
           $nChange = ChangePoints::find($ch['id']);
           $nChange->state = "rechazado";
           $nChange->comment = "Rechazada por puntos insuficientes, verifique sus facturas";
           $nChange->update();
-        }    
+        }
       }
       $user->points = $newPointsUSer;
-      ($invoiceUpdate->update() && $user->update() ) ? DB::commit() : $saveOK = false;  
+      ($invoiceUpdate->update() && $user->update()) ? DB::commit() : $saveOK = false;
     }
 
-    return($saveOK) ? ["message" => "success"] : ["message" => "error"];
+    return ($saveOK) ? ["message" => "success"] : ["message" => "error"];
   }
-
 }
