@@ -1,0 +1,35 @@
+version: '3'
+services:
+  db:
+    image: mariadb:5.5.60
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: mysecretpassword
+      MYSQL_DATABASE: conticlub
+      MYSQL_USER: root
+      MYSQL_PASSWORD: mysecretpassword
+    volumes:
+      - ./data:/var/lib/mysql
+    ports:
+      - 3307:3306
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8000:80
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - db
+    working_dir: /var/www/html
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: conticlub
+      DB_USERNAME: root
+      DB_PASSWORD: mysecretpassword
+
+volumes:
+  db_data: {}
