@@ -6,19 +6,23 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: mysecretpassword
       MYSQL_DATABASE: conticlub
-      MYSQL_USER: root
-      MYSQL_PASSWORD: mysecretpassword
+      MYSQL_USER: laravel_user
+      MYSQL_PASSWORD: notsecret
     volumes:
-      - ./data:/var/lib/mysql
+      - ./databaseVolume:/var/lib/mysql
     ports:
       - 3307:3306
+    networks:
+      - backend
 
-  app:
+  php:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - 8000:80
+    expose:
+      - "9000"
+    networks:
+      - backend
     volumes:
       - .:/var/www/html
     depends_on:
@@ -28,8 +32,27 @@ services:
       DB_HOST: db
       DB_PORT: 3306
       DB_DATABASE: conticlub
-      DB_USERNAME: root
-      DB_PASSWORD: mysecretpassword
+      DB_USERNAME: laravel_user
+      DB_PASSWORD: notsecret
+
+  nginx:
+    image: nginx:mainline-alpine
+    networks:
+      - backend
+    ports:
+      - '8080:8080'
+    restart: on-failure
+    volumes:
+      - .:/var/www/html
+      - ./nginx_config.conf:/etc/nginx/conf.d/site.conf
+    links:
+      - php
+    depends_on:
+      - php
 
 volumes:
-  db_data: {}
+  databaseVolume: {}
+
+networks:
+    backend:
+        driver: bridge

@@ -1,28 +1,32 @@
-FROM php:7.2-apache
+FROM php:7.2-fpm
 
-# Install git
-RUN apt-get update && \
-    apt-get upgrade -y && \
-    apt-get install -y git
+RUN apt-get update && apt-get install -y \
+    git \
+    zip \
+    curl \
+    sudo \
+    unzip \
+    libicu-dev \
+    libbz2-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libmcrypt-dev \
+    libreadline-dev \
+    libfreetype6-dev
 
-# Install dependencies required by Composer and the PHP extensions we want to use
-RUN apt-get install -y \
-        libzip-dev \
-        unzip \
-    && docker-php-ext-install \
-        pdo_mysql \
-        zip
+RUN docker-php-ext-install \
+    bz2 \
+    intl \
+    iconv \
+    bcmath \
+    opcache \
+    calendar \
+    mbstring \
+    pdo_mysql \
+    zip
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-WORKDIR /var/www/html
+CMD ["sh", "-c", "chown -R www-data:www-data /var/www/html/storage && cd /var/www/html && composer install && php artisan key:generate && php-fpm"]
 
-# Copiar el proyecto a la carpeta /var/www/html del contenedor
-COPY . .
-
-# Configurar permisos para Apache
-RUN chown -R www-data:www-data /var/www/html
-
-# Install project dependencies
-RUN composer install
+EXPOSE 9000
