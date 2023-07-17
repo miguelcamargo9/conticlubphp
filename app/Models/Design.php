@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,7 +18,7 @@ class Design extends Model
 {
     /**
      * The table associated with the model.
-     * 
+     *
      * @var string
      */
     protected $table = 'design';
@@ -33,7 +33,7 @@ class Design extends Model
      */
     public function brand()
     {
-        return $this->belongsTo('App\Brand');
+        return $this->belongsTo('App\Models\Brand');
     }
 
     /**
@@ -41,6 +41,6 @@ class Design extends Model
      */
     public function rins()
     {
-        return $this->hasMany('App\Rin');
+        return $this->hasMany('App\Models\Rin');
     }
 }

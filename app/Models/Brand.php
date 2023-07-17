@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,7 +15,7 @@ class Brand extends Model
 {
     /**
      * The table associated with the model.
-     * 
+     *
      * @var string
      */
     protected $table = 'brand';
@@ -30,6 +30,6 @@ class Brand extends Model
      */
     public function designs()
     {
-        return $this->hasMany('App\Design');
+        return $this->hasMany('App\Models\Design');
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,7 +25,7 @@ class Points extends Model
      */
     public function invoice()
     {
-        return $this->belongsTo('App\Invoice');
+        return $this->belongsTo('App\Models\Invoice');
     }
 
     /**
@@ -33,6 +33,6 @@ class Points extends Model
      */
     public function pointsMovimentsDetails()
     {
-        return $this->hasMany('App\PointsMovimentsDetail', 'points_id');
+        return $this->hasMany('App\Models\PointsMovimentsDetail', 'points_id');
     }
 }

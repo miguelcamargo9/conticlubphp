@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -22,7 +22,7 @@ class Profiles extends Model
      */
     public function profilesMenus()
     {
-        return $this->hasMany('App\ProfilesMenu', 'profiles_id');
+        return $this->hasMany('App\Models\ProfilesMenu', 'profiles_id');
     }
 
     /**

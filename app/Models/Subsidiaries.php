@@ -19,7 +19,7 @@ class Subsidiaries extends Model {
 
   /**
    * The table associated with the model.
-   * 
+   *
    * @var string
    */
   protected $table = 'subsidiary';
@@ -33,7 +33,7 @@ class Subsidiaries extends Model {
    * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
    */
   public function city() {
-    return $this->belongsTo('App\Cities', 'cities_id');
+    return $this->belongsTo('App\Models\Cities', 'cities_id');
   }
 
   /**
@@ -44,7 +44,7 @@ class Subsidiaries extends Model {
   }
 
   public function profile() {
-    return $this->belongsTo('App\Profiles', 'profiles_id');
+    return $this->belongsTo('App\Models\Profiles', 'profiles_id');
   }
 
 }

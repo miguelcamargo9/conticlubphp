@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,7 +16,7 @@ class RinPointsByProfile extends Model
 {
     /**
      * The table associated with the model.
-     * 
+     *
      * @var string
      */
     protected $table = 'rin_points_by_perfil';
@@ -31,7 +31,7 @@ class RinPointsByProfile extends Model
      */
     public function profile()
     {
-        return $this->belongsTo('App\Profile', 'profiles_id');
+        return $this->belongsTo('App\Models\Profile', 'profiles_id');
     }
 
     /**
@@ -39,6 +39,6 @@ class RinPointsByProfile extends Model
      */
     public function rin()
     {
-        return $this->belongsTo('App\Rin');
+        return $this->belongsTo('App\Models\Rin');
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,6 +21,6 @@ class ProductCategories extends Model
      */
     public function products()
     {
-        return $this->hasMany('App\Product', 'product_categories_id');
+        return $this->hasMany('App\Models\Product', 'product_categories_id');
     }
 }

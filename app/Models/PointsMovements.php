@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -23,6 +23,6 @@ class PointsMovements extends Model
      */
     public function pointsMovimentsDetails()
     {
-        return $this->hasMany('App\PointsMovimentsDetail', 'points_movements_id');
+        return $this->hasMany('App\Models\PointsMovimentsDetail', 'points_movements_id');
     }
 }

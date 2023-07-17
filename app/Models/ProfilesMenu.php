@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,7 +15,7 @@ class ProfilesMenu extends Model
 {
     /**
      * The table associated with the model.
-     * 
+     *
      * @var string
      */
     protected $table = 'profiles_menu';
@@ -30,7 +30,7 @@ class ProfilesMenu extends Model
      */
     public function menu()
     {
-        return $this->belongsTo('App\Menu');
+        return $this->belongsTo('App\Models\Models\Menu');
     }
 
     /**
@@ -38,6 +38,6 @@ class ProfilesMenu extends Model
      */
     public function profile()
     {
-        return $this->belongsTo('App\Profile', 'profiles_id');
+        return $this->belongsTo('App\Models\Models\Profile', 'profiles_id');
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,7 +19,7 @@ class Product extends Model
 {
     /**
      * The table associated with the model.
-     * 
+     *
      * @var string
      */
     protected $table = 'product';
@@ -34,7 +34,7 @@ class Product extends Model
      */
     public function productCategory()
     {
-        return $this->belongsTo('App\ProductCategories', 'product_categories_id');
+        return $this->belongsTo('App\Models\ProductCategories', 'product_categories_id');
     }
 
     /**
@@ -42,7 +42,7 @@ class Product extends Model
      */
     public function productImages()
     {
-        return $this->hasMany('App\ProductImages');
+        return $this->hasMany('App\Models\ProductImages');
     }
 
     /**
@@ -50,6 +50,6 @@ class Product extends Model
      */
     public function wishLists()
     {
-        return $this->hasMany('App\WishList');
+        return $this->hasMany('App\Models\WishList');
     }
 }

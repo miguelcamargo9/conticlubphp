@@ -6,7 +6,6 @@ namespace App;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property int $id
@@ -50,21 +49,21 @@ class User extends Authenticatable {
    * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
    */
   public function profile() {
-    return $this->belongsTo('App\Profiles', 'profiles_id');
+    return $this->belongsTo('App\Models\Profiles', 'profiles_id');
   }
 
   /**
    * @return \Illuminate\Database\Eloquent\Relations\HasMany
    */
   public function invoices() {
-    return $this->hasMany('App\Invoice', 'users_id');
+    return $this->hasMany('App\Models\Invoice', 'users_id');
   }
 
   /**
    * @return \Illuminate\Database\Eloquent\Relations\HasMany
    */
   public function wishLists() {
-    return $this->hasMany('App\WishList', 'users_id');
+    return $this->hasMany('App\Models\WishList', 'users_id');
   }
-  
+
 }

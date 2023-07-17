@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,7 +20,7 @@ class Cities extends Model {
    * @return \Illuminate\Database\Eloquent\Relations\HasMany
    */
   public function subsidiary() {
-    return $this->hasMany('App\Subsidiary', 'subsidiary_id');
+    return $this->hasMany('App\Models\Subsidiary', 'subsidiary_id');
   }
 
 }

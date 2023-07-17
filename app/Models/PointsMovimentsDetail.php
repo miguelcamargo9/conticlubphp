@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -16,10 +16,10 @@ class PointsMovimentsDetail extends Model
 {
     /**
      * The table associated with the model.
-     * 
+     *
      * @var string
      */
-    protected $table = 'points_moviments_detail';
+    protected $table = 'points_movements_detail';
 
     /**
      * @var array
@@ -31,7 +31,7 @@ class PointsMovimentsDetail extends Model
      */
     public function point()
     {
-        return $this->belongsTo('App\Point', 'points_id');
+        return $this->belongsTo('App\Models\Point', 'points_id');
     }
 
     /**
@@ -39,6 +39,6 @@ class PointsMovimentsDetail extends Model
      */
     public function pointsMovement()
     {
-        return $this->belongsTo('App\PointsMovement', 'points_movements_id');
+        return $this->belongsTo('App\Models\PointsMovement', 'points_movements_id');
     }
 }

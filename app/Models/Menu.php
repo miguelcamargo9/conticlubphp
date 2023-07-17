@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -21,6 +21,6 @@ class Menu extends Model
      */
     public function profilesMenus()
     {
-        return $this->hasMany('App\ProfilesMenu');
+        return $this->hasMany('App\Models\ProfilesMenu');
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,7 +17,7 @@ class Rin extends Model
 {
     /**
      * The table associated with the model.
-     * 
+     *
      * @var string
      */
     protected $table = 'rin';
@@ -32,7 +32,7 @@ class Rin extends Model
      */
     public function design()
     {
-        return $this->belongsTo('App\Design');
+        return $this->belongsTo('App\Models\Design');
     }
 
     /**
@@ -40,13 +40,13 @@ class Rin extends Model
      */
     public function invoiceReferences()
     {
-        return $this->hasMany('App\InvoiceReference');
+        return $this->hasMany('App\Models\InvoiceReference');
     }
         /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function rinPointsByPerfils()
     {
-        return $this->hasMany('App\RinPointsByProfile');
+        return $this->hasMany('App\Models\RinPointsByProfile');
     }
 }

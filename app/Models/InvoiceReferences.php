@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,7 +24,7 @@ class InvoiceReferences extends Model
      */
     public function invoice()
     {
-        return $this->belongsTo('App\Invoice');
+        return $this->belongsTo('App\Models\Invoice');
     }
 
     /**
@@ -32,6 +32,6 @@ class InvoiceReferences extends Model
      */
     public function rin()
     {
-        return $this->belongsTo('App\Rin');
+        return $this->belongsTo('App\Models\Rin');
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,7 +19,7 @@ class Invoice extends Model
 {
     /**
      * The table associated with the model.
-     * 
+     *
      * @var string
      */
     protected $table = 'invoice';
@@ -42,7 +42,7 @@ class Invoice extends Model
      */
     public function invoiceReferences()
     {
-        return $this->hasMany('App\InvoiceReferences');
+        return $this->hasMany('App\Models\InvoiceReferences');
     }
 
     /**
@@ -50,6 +50,6 @@ class Invoice extends Model
      */
     public function points()
     {
-        return $this->hasMany('App\Points');
+        return $this->hasMany('App\Models\Points');
     }
 }

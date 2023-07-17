@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,14 +15,14 @@ class WishList extends Model
 {
     /**
      * The table associated with the model.
-     * 
+     *
      * @var string
      */
     protected $table = 'wish_list';
 
     /**
      * The primary key for the model.
-     * 
+     *
      * @var string
      */
     protected $primaryKey = 'idwish_list';
@@ -37,7 +37,7 @@ class WishList extends Model
      */
     public function product()
     {
-        return $this->belongsTo('App\Product');
+        return $this->belongsTo('App\Models\Product');
     }
 
     /**
