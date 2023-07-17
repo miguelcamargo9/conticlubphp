@@ -5,8 +5,8 @@ namespace App\Http\Controllers\API;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 
-
-Use App\WishList;
+// Models
+Use App\Models\WishList;
 
 class WishListController extends BaseController {
 
@@ -21,13 +21,13 @@ class WishListController extends BaseController {
     }
     return( $wishList->save()) ? ["message" => "success"] : ["message" => "error"];
   }
-  
+
   //DEVOLVER LA LISTA DE DESEOS DE UN USUARIO
   public function get($id) {
     $wishList = WishList::where("users_id",$id)->with("product")->get();
     return $wishList;
   }
-  
+
   //DEVOLVER TODAS LAS LISTAS DE DESEOS
   public function all() {
     $wishList = WishList::with(["product","user:id,name"])->get();

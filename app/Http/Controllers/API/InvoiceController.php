@@ -6,15 +6,16 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
-//MODELOS
-use App\Invoice;
-use App\InvoiceReferences;
-use App\Points;
-use App\PointsMovements;
-use App\PointsMovimentsDetail;
-use App\RinPointsByProfile;
+
+// Models
+use App\Models\Invoice;
+use App\Models\InvoiceReferences;
+use App\Models\Points;
+use App\Models\PointsMovements;
+use App\Models\PointsMovimentsDetail;
+use App\Models\RinPointsByProfile;
 use App\User;
-use App\ChangePoints;
+use App\Models\ChangePoints;
 
 class InvoiceController extends BaseController
 {

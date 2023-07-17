@@ -11,9 +11,10 @@ namespace App\Http\Controllers\API;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
-//MODELOS
-use App\Rin;
-use App\RinPointsByProfile;
+
+//Models
+use App\Models\Rin;
+use App\Models\RinPointsByProfile;
 
 class RinController extends BaseController {
 

@@ -6,7 +6,9 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
-use App\Cities;
+
+// Models
+use App\Models\Cities;
 
 class CitiesController extends BaseController {
 
@@ -27,13 +29,13 @@ class CitiesController extends BaseController {
     }
     return( $city->save()) ? ["message" => "success"] : ["message" => "error"];
   }
-  
+
   ///OBTENER UNA CIUDAD EXISTENTE
   public function get($id) {
     $city = Cities::find($id);
     return $city;
   }
-  
+
   //ACTIALIZAR UNA CIUDAD
   public function update($id,Request $r) {
     $cityR=json_decode($r->getContent(), true);

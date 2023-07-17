@@ -5,7 +5,8 @@ namespace App\Http\Controllers\API;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
-//MODELOS
+
+// Models
 use App\Models\Slides;
 
 class SlidesController extends BaseController {
@@ -44,7 +45,7 @@ class SlidesController extends BaseController {
     $slide = Slides::find($id);
     return $slide;
   }
-  
+
   //OBTENER UN SLIDE EXISTENTE
   public function getByPosition($position, $responsive) {
     $slides = Slides::where("show","1")->where("position",$position)->where("responsive",$responsive)->orderBy('order', 'asc')->get();

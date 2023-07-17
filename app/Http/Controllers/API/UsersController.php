@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Input;
 use App\Mail\Contactenos;
 use App\Mail\Recover;
 use Illuminate\Support\Facades\Mail;
-//MODELOS
+
+// Models
 use App\User;
 
 class UsersController extends BaseController {
@@ -131,7 +132,7 @@ class UsersController extends BaseController {
       return ["message" => "success"];
     }
   }
-  
+
   private function randomPassword() {
         $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
         $pass = array(); //remember to declare $pass as an array
@@ -142,7 +143,7 @@ class UsersController extends BaseController {
         }
         return implode($pass); //turn the array into a string
     }
-  
+
   //RECUPERAR UNA CONTRASEÑA
   public function recover(Request $r) {
       $data  = json_decode($r->getContent(), true);
@@ -167,5 +168,5 @@ class UsersController extends BaseController {
           return ["message" => "error","detail"=>"No se encontro usuario con esos datos"];
       }
   }
-  
+
 }

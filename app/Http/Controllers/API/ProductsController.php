@@ -5,10 +5,11 @@ namespace App\Http\Controllers\API;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
-//MODELOS
-use App\Product;
-use App\ProductImages;
-use App\ProductCategories;
+
+// Models
+use App\Models\Product;
+use App\Models\ProductImages;
+use App\Models\ProductCategories;
 
 class ProductsController extends BaseController {
 
@@ -18,27 +19,27 @@ class ProductsController extends BaseController {
   }
 
   public function create(Request $r) {
-    
+
     //$infoProduct = json_decode($r->getContent(), true);
     $infoProduct = json_decode(Input::post("data"), true);
     $images = $r->file('images');
     $mainImage = $r->file('image');
     $idCategory = $infoProduct['product_categories_id'];
-    
-    
+
+
     $newProduct = new Product();
-    
+
     foreach ($infoProduct as $column=>$value){
       $newProduct->$column = $value;
     }
-    
+
     $category = ProductCategories::find($idCategory);
     $ameCategory = $category->name;
 
     if($newProduct->save()){
       $idProduct = $newProduct->id;
       $path = public_path()."/products/$ameCategory/{$idProduct}";
-      
+
       $nomeMainOmg = $mainImage->getClientOriginalName();
       $mainImage->move($path, "$nomeMainOmg");
       //actualizar y guardar la imagen del registro
@@ -56,40 +57,40 @@ class ProductsController extends BaseController {
           $productImgs->save();
         }
       }
-    
+
     }
     return ["message"=>"success"];
     //$nombre = $documento->getClientOriginalName();
     //$documento->move("$idCaso/$idRegistro", "$nombre");
   }
-  
+
    ///OBTENER UN PRODUCTO EXISTENTE
   public function get($id) {
     $product = Product::with("productCategory")->find($id);
     return $product;
   }
-  
+
   //Obetenr un producto por idCategory
   public function getProductByCategory($idCategory) {
     $products = Product::with("productCategory")->where([["product_categories_id","=",$idCategory],["state","1"]])->get();
     return $products;
   }
-  
+
   public function getProductCategories() {
     return ProductCategories::all();
   }
-  
+
   //ACTIALIZAR UN PRODUCTO
   public function update($id, Request $r) {
     //$data = json_decode($r->getContent(), true);
     $data = json_decode(Input::post("data"), true);
-   
+
     $product = Product::find($id);
     $idCategory= $product->product_categories_id;
     $category = ProductCategories::find($idCategory);
-    
+
     $nameCategory = $category['name'];
-    
+
     foreach ($data as $column => $value) {
       $product->$column = $value;
     }
@@ -97,7 +98,7 @@ class ProductsController extends BaseController {
       $img = $r->file('image');
       $idProduct = $product->id;
       $path = public_path()."/products/$nameCategory/{$idProduct}";
-      
+
       $nomeMainOmg = $img->getClientOriginalName();
       $img->move($path, "$nomeMainOmg");
       //actualizar y guardar la imagen del registro
@@ -107,7 +108,7 @@ class ProductsController extends BaseController {
     }
     return( $product->update()) ? ["message" => "success"] : ["message" => "error"];
   }
-  
+
   public function delete($id) {
     $product = Product::find($id);
     $product->state=2;

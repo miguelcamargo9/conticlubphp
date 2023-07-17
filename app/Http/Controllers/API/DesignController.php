@@ -10,8 +10,9 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
-//MODELOS
-use App\Design;
+
+// Models
+use App\Models\Design;
 
 class DesignController {
 
@@ -33,7 +34,7 @@ class DesignController {
       if ($desing->save() && $r->hasfile('image')) {
         $idDesign = $desing->id;
         $img = $r->file('image');
-       
+
         if (!$rountMailImg = $this->saveImg($img, $idDesign)) {
            return ["message" => "error"];
         }
@@ -86,10 +87,10 @@ class DesignController {
 
     //actualizar y guardar la imagen del registro
     $rountMailImg = "/desing/{$idDesign}}/{$nameImg}";
-   
+
     return $img->move($path, "$nameImg") ? $rountMailImg : false;
   }
-  
+
   //RETORNAR UN DISEÑO POR MARCA
   public function getByBrand($idBrand) {
     $desing = Design::where("brand_id","=",$idBrand)->orderBy('name', 'ASC')->get();

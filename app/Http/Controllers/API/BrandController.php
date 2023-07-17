@@ -10,12 +10,12 @@ namespace App\Http\Controllers\API;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 
-//MODELOS
-use App\Brand;
+// Models
+use App\Models\Brand;
 
 class BrandController {
-  
-  
+
+
    public function all() {
     $brand = Brand::all();
     return $brand;

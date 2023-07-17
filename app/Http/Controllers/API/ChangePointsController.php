@@ -5,14 +5,15 @@ namespace App\Http\Controllers\API;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-//MODELOS
-Use App\ChangePoints;
-Use App\Product;
+
+// Models
+Use App\Models\ChangePoints;
+Use App\Models\Product;
 Use App\User;
-Use App\Points;
-use App\PointsMovements;
-use App\PointsMovimentsDetail;
-use App\Invoice;
+Use App\Models\Points;
+use App\Models\PointsMovements;
+use App\Models\PointsMovimentsDetail;
+use App\Models\Invoice;
 
 class ChangePointsController extends BaseController {
 
@@ -107,7 +108,7 @@ class ChangePointsController extends BaseController {
           $state = "";
           $newPoints = null;
           $pointsSave = 0;
-          
+
           if ($complete < 0) {
             $newPoints = ($complete * (-1));
             $pointsSave = $p - $newPoints;
@@ -124,7 +125,7 @@ class ChangePointsController extends BaseController {
             $pintsProduct = $complete;
             $state = "used";
           }
-          
+
           if (!$this->updateHistoryPoints($idPoints, $state, $pointsSave, $newPoints, $idInvoice)) {
             $saveOK = false;
           } else {

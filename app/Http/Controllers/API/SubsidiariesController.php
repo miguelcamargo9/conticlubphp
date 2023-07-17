@@ -5,9 +5,8 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 
 
-//MODELOS
+// Models
 use App\Models\Subsidiaries ;
-//use App\Cities;
 
 class SubsidiariesController extends BaseController {
 
