@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Mail;
 
 // Models
 use App\User;
+use App\Models\Invoice;
 
 class UsersController extends BaseController {
 
@@ -120,13 +121,19 @@ class UsersController extends BaseController {
     return $user;
   }
 
+    //FACTURAS DEL USUARIO POR ESTADO
+    public function historyInvoiceByState($id,$state) {
+        $invoice = Invoice::where([["users_id",$id],["state",$state]])->with("invoiceReferences")->with("points")->get();
+        return $invoice;
+    }
+
   public function contactenos(Request $r) {
     $infoUser = $r->user();
     $datos = json_decode($r->getContent(), true);
     $datos['uname'] = $infoUser->name;
     try {
 //      Mail::to("miguelcamargo9@gmail.com")->send(new Contactenos($datos));
-      Mail::to("conticlub@lupdup.com, carloslopez@introcrea.com")->send(new Contactenos($datos));
+        Mail::to(["conticlub@lupdup.com", "carloslopez@introcrea.com"])->send(new Contactenos($datos));
       return ["message" => "success"];
     } catch (Exception $e) {
       return ["message" => "success"];

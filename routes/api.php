@@ -27,6 +27,7 @@ Route::group(['middleware' => ['auth:api']], function($router) {
   Route::post("users/update/{id}", 'API\UsersController@update');
   Route::get("users/withsubsidiary", 'API\UsersController@withSubsidiary');
   Route::get("users/historyinvoice/{id}", 'API\UsersController@historyInvoice');
+  Route::get("users/historyInvoicebystate/{id}/{state}", 'API\UsersController@historyInvoiceByState');
   Route::put("users/delete/{id}", 'API\UsersController@delete');
   Route::post("users/contactenos", 'API\UsersController@contactenos');
 
@@ -38,7 +39,7 @@ Route::group(['middleware' => ['auth:api']], function($router) {
   Route::post("products/delete/{id}", 'API\ProductsController@delete');
   Route::get("products/byCategory/{idCategory}", 'API\ProductsController@getProductByCategory');
   Route::get("products/categories/all", 'API\ProductsController@getProductCategories');
-  
+
   //PRODUCTS CATEGORIES
   Route::get("product/category/all", 'API\ProductCategoriesController@all');
   Route::post("product/category/create", 'API\ProductCategoriesController@create');
@@ -103,6 +104,8 @@ Route::group(['middleware' => ['auth:api']], function($router) {
   Route::post("invoice/create", 'API\InvoiceController@create');
   Route::get("invoice/get/{id}", 'API\InvoiceController@get');
   Route::post("invoice/rejected/{id}", 'API\InvoiceController@rejected');
+  Route::post("invoice/approved/{id}", 'API\InvoiceController@approved');
+  Route::get("invoice/getbystate/{state}", 'API\InvoiceController@getByState');
 
   //CAMBIO DE PRODUCTOS
   Route::post("product/applyfor", 'API\ChangePointsController@applyFor');
@@ -112,12 +115,12 @@ Route::group(['middleware' => ['auth:api']], function($router) {
   Route::get("product/applyfor/all", 'API\ChangePointsController@all');
   Route::get("product/applyfor/getbyuser/{id}", 'API\ChangePointsController@GetbyUser');
   Route::get("product/applyfor/get/{id}", 'API\ChangePointsController@get');
-  
+
   //LISTA DE DESEOS
    Route::post("wishlist/create", 'API\WishListController@create');
    Route::get("wishlist/get/{id}", 'API\WishListController@get');
    Route::get("wishlist/all", 'API\WishListController@all');
-   
+
    //REPORTES
    Route::get("reportes/invoicebyuser", 'API\RerportController@invoicesByUsers');
 });

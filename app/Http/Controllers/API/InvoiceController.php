@@ -215,4 +215,21 @@ class InvoiceController extends BaseController
 
     return ($saveOK) ? ["message" => "success"] : ["message" => "error"];
   }
+
+  //aprobar una factura
+  public function approved($idInvoice, Request $r) {
+    $user = $r->user();
+    if ($user->profiles_id == 4) {
+      $invoiceUpdate = Invoice::find($idInvoice);
+      $invoiceUpdate->state = "Aprobada";
+      return ($invoiceUpdate->update()) ? ["message" => "success"] : ["message" => "error"];
+    } else{
+       return["message" => "No tiene permitodo hacer esta acción"];
+    }
+  }
+
+  public function getByState($state) {
+    $invoice = Invoice::where("state",$state)->with("invoiceReferences")->with("points")->get();
+    return $invoice;
+  }
 }
