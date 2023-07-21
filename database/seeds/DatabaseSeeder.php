@@ -2,6 +2,15 @@
 
 use Illuminate\Database\Seeder;
 
+use ProfilesSeeder;
+use CitiesSeeder;
+use SubsidiarySeeder;
+use BrandSeeder;
+use ProductCategorySeeder;
+use ProductSeeder;
+use DesignSeeder;
+use UsersTableSeeder;
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -18,5 +27,6 @@ class DatabaseSeeder extends Seeder
         $this->call(ProductCategorySeeder::class);
         $this->call(ProductSeeder::class);
         $this->call(DesignSeeder::class);
+        $this->call(UsersTableSeeder::class);
     }
 }
