@@ -6,6 +6,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 // Models
 use App\Models\Invoice;
@@ -20,14 +21,14 @@ use App\Models\ChangePoints;
 class InvoiceController extends BaseController
 {
 
-  public function create(Request $r)
+  public function create(Request $req)
   {
     $data = json_decode(Input::post("data"), true);
     $rines = json_decode(Input::post("rines"), true);
-    $infoUser = $r->user();
+    $infoUser = $req->user();
     $idUser = $infoUser->id;
     $idSubsidiary = $infoUser->subsidiary_id;
-    $image = $r->file('image');
+    $image = $req->file('image');
     $invoice = new Invoice();
     $invoice->subsidiary_id = $idSubsidiary;
     $save = true;
@@ -39,15 +40,12 @@ class InvoiceController extends BaseController
     try {
       if ($invoice->save()) {
         $idInvoice = $invoice->id;
-        if ($r->hasfile('image')) {
+        if ($req->hasfile('image')) {
+            // Almacenar el archivo en S3 dentro de la carpeta 'invoices'
+            $path = "files/invoices/{$idUser}/{$idInvoice}-{$image->getClientOriginalName()}";
+            Storage::disk('s3')->put($path , file_get_contents($image));
 
-          $path = public_path() . "/invoices/{$idInvoice}";
-
-          $nomeMainOmg = $image->getClientOriginalName();
-          $image->move($path, "$nomeMainOmg");
-          //actualizar y guardar la imagen del registro
-          $rountMailImg = "/invoices/{$idInvoice}/{$nomeMainOmg}";
-          $invoice->image = $rountMailImg;
+            $invoice->image = $path;
         }
         //SI GUARDA BIEN LA IMAGNE DE LA FACTURA
         if ($invoice->update()) {

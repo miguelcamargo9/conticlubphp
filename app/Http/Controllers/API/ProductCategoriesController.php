@@ -28,6 +28,7 @@ class ProductCategoriesController extends BaseController {
     foreach ($productCategoryR as $column => $value) {
       $productCategory->$column = $value;
     }
+    $productCategory->path = str_slug($productCategory->name);
     return( $productCategory->save()) ? ["message" => "success"] : ["message" => "error"];
   }
 

@@ -641,7 +641,6 @@
  ('265/75 R 16', '4508470000', 'LT265/75R16 123/120R LRE FR GRABBER A/TX RWL 10PR', (select id from design where name = 'GRABBER ATX')),
  ('225/70 R 16', '15490770000', '225/70R16 103S FR CROSSCONTACT LX20 OWL', (select id from design where name = 'ContiCrossContact LX20')),
  ('265/65 R 17', '15447810000', '265/65R17 112S GRABBER AT2 OWL', (select id from design where name = 'GRABBER AT2')),
- ('235/60 R 16', '15502250000', '235/60R16 100T FR CCLX20', (select id from design where name = 'ContiCrossContact LX20')),
  ('205/45 R 17', '3565520000', '205/45R17 88W XL FR ContiSportContact 5', (select id from design where name = 'ContiSportContact 5')),
  ('215/55 R 18', '15482620000', 'P215/55R18 94H ContiProContact', (select id from design where name = 'ContiProContact')),
  ('235/50 R 18', '15496530009', '235/50R18 97V PROCTX           D9', (select id from design where name = 'ProContact TX')),

@@ -641,7 +641,6 @@
  ((select id from rin where rin_code = '4508470000'), 2, 30, 0, 30 ),
  ((select id from rin where rin_code = '15490770000'), 2, 45, 0, 45 ),
  ((select id from rin where rin_code = '15447810000'), 2, 30, 20, 50 ),
- ((select id from rin where rin_code = '15502250000'), 2, 45, 0, 45 ),
  ((select id from rin where rin_code = '3565520000'), 2, 20, 20, 40 ),
  ((select id from rin where rin_code = '15482620000'), 2, 20, 20, 40 ),
  ((select id from rin where rin_code = '15496530009'), 2, 10, 0, 10 ),

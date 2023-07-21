@@ -18,12 +18,12 @@ class ProductsController extends BaseController {
     return $producs;
   }
 
-  public function create(Request $r) {
+  public function create(Request $req) {
 
     //$infoProduct = json_decode($r->getContent(), true);
     $infoProduct = json_decode(Input::post("data"), true);
-    $images = $r->file('images');
-    $mainImage = $r->file('image');
+    $images = $req->file('images');
+    $mainImage = $req->file('image');
     $idCategory = $infoProduct['product_categories_id'];
 
 
@@ -34,7 +34,7 @@ class ProductsController extends BaseController {
     }
 
     $category = ProductCategories::find($idCategory);
-    $ameCategory = $category->name;
+    $ameCategory = $category->path;
 
     if($newProduct->save()){
       $idProduct = $newProduct->id;
@@ -46,7 +46,7 @@ class ProductsController extends BaseController {
       $rountMailImg = "/products/$ameCategory/{$idProduct}/$nomeMainOmg";
       $newProduct->image = urlencode($rountMailImg);
       $newProduct->update();
-      if ($r->hasfile('images')) {
+      if ($req->hasfile('images')) {
         foreach ($images as $file) {
           $name = $file->getClientOriginalName();
           $file->move($path, $name);
