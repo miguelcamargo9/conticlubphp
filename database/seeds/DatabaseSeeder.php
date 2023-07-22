@@ -2,14 +2,14 @@
 
 use Illuminate\Database\Seeder;
 
-use ProfilesSeeder;
-use CitiesSeeder;
-use SubsidiarySeeder;
-use BrandSeeder;
-use ProductCategorySeeder;
-use ProductSeeder;
-use DesignSeeder;
-use UsersTableSeeder;
+use Database\Seeders\ProfilesSeeder;
+use Database\Seeders\CitiesSeeder;
+use Database\Seeders\SubsidiarySeeder;
+use Database\Seeders\BrandSeeder;
+use Database\Seeders\ProductCategorySeeder;
+use Database\Seeders\ProductSeeder;
+use Database\Seeders\DesignSeeder;
+use Database\Seeders\UsersTableSeeder;
 
 class DatabaseSeeder extends Seeder
 {
