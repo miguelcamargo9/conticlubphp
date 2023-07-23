@@ -22,7 +22,6 @@ Route::group(['middleware' => ['auth:api']], function($router) {
   Route::get("allprofiles", 'API\ProfilesController@allProfiles');
   //CRUD PARA LOS USUARIOS
   Route::get("users/all", 'API\UsersController@all');
-  Route::post("users/create", 'API\UsersController@create');
   Route::get("users/getuser/{id}", 'API\UsersController@get');
   Route::post("users/update/{id}", 'API\UsersController@update');
   Route::get("users/withsubsidiary", 'API\UsersController@withSubsidiary');
@@ -59,9 +58,10 @@ Route::group(['middleware' => ['auth:api']], function($router) {
   Route::get("profiles/get/{id}", 'API\ProfilesController@get');
   Route::put("profiles/update/{id}", 'API\ProfilesController@update');
   Route::delete("profiles/delete/{id}", 'API\ProfilesController@delete');
+  Route::get('profiles/sellers', 'API\ProfilesController@getSellers')->name('profiles.sellers');
+
 
   //SUCURSALES
-  Route::get("subsidiary/all", 'API\SubsidiariesController@all');
   Route::post("subsidiary/create", 'API\SubsidiariesController@create');
   Route::get("subsidiary/get/{id}", 'API\SubsidiariesController@get');
   Route::post("subsidiary/update/{id}", 'API\SubsidiariesController@update');
@@ -123,6 +123,15 @@ Route::group(['middleware' => ['auth:api']], function($router) {
 
    //REPORTES
    Route::get("reportes/invoicebyuser", 'API\RerportController@invoicesByUsers');
+});
+
+//RUTAS protegidas con client key
+Route::group(['middleware' => ['client']], function () {
+    //DISEÑOS
+    Route::get("subsidiary/all", 'API\SubsidiariesController@all');
+
+    //USERS
+    Route::post("users/create", 'API\UsersController@create');
 });
 
 

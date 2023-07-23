@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Storage;
 
 // Models
 use App\Models\Slides;
@@ -29,12 +30,11 @@ class SlidesController extends BaseController {
     $newSlide->path = "";
 
     if ($newSlide->save()) {
-      $path = public_path() . "/slides/";
+      $path = "/files/slides/slide_{$newSlide->id}.{$mainImage->getClientOriginalExtension()}";
+      Storage::disk('s3')->put($path , file_get_contents($mainImage));
 
-      $nameSlideFile = "slide_{$newSlide->id}.{$mainImage->getClientOriginalExtension()}";
-      $mainImage->move($path, "$nameSlideFile");
       //actualizar y guardar la imagen del registro
-      $newSlide->path = "/slides/$nameSlideFile";
+      $newSlide->path = $path;
       $newSlide->update();
     }
     return ["message" => "success"];

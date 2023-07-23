@@ -42,7 +42,7 @@ class InvoiceController extends BaseController
         $idInvoice = $invoice->id;
         if ($req->hasfile('image')) {
             // Almacenar el archivo en S3 dentro de la carpeta 'invoices'
-            $path = "files/invoices/{$idUser}/{$idInvoice}-{$image->getClientOriginalName()}";
+            $path = "/files/invoices/{$idUser}/{$idInvoice}-{$image->getClientOriginalName()}";
             Storage::disk('s3')->put($path , file_get_contents($image));
 
             $invoice->image = $path;
