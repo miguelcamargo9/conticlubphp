@@ -25,6 +25,11 @@ class InvoiceController extends BaseController
   public function create(Request $req)
   {
     $data = json_decode(Input::post("data"), true);
+
+    if (isset($data['sale_date']) && $data['sale_date'] < '2023-05-01') {
+        return ["message" => "error", "detail" => "La fecha de venta no puede ser menor a mayo de 2023."];
+    }
+
     $rines = json_decode(Input::post("rines"), true);
     $infoUser = $req->user();
     $idUser = $infoUser->id;
