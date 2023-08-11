@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use Exception;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -106,6 +107,8 @@ class InvoiceController extends BaseController
     } catch (\Illuminate\Database\QueryException $e) {
       $error = $e->errorInfo;
       return ($error[0] == "23000") ? ["message" => "error", "detail" => "Ya esta registrada una factura con ese numero"] : ["message" => "error", "detail" => $error[2]];
+    } catch (Exception $e) {
+      return ["message" => "error", "detail" => $e->getMessage()];
     }
     return ($save) ? ["message" => "success", "currentPoints" => $user->points, "points" => $totalPoints] : ["message" => "error"];
   }
