@@ -62,10 +62,10 @@ Route::group(['middleware' => ['auth:api']], function($router) {
 
 
   //SUCURSALES
-  Route::post("subsidiary/create", 'API\SubsidiariesController@create');
-  Route::get("subsidiary/get/{id}", 'API\SubsidiariesController@get');
-  Route::post("subsidiary/update/{id}", 'API\SubsidiariesController@update');
-  Route::post("subsidiary/delete/{id}", 'API\SubsidiariesController@delete');
+  Route::post("subsidiary", 'API\SubsidiariesController@create');
+  Route::get("subsidiary/{id}", 'API\SubsidiariesController@get');
+  Route::put("subsidiary/{id}", 'API\SubsidiariesController@update');
+  Route::delete("subsidiary/{id}", 'API\SubsidiariesController@delete');
 
   //MARCAS
   Route::get("brand/all", 'API\BrandController@all');
@@ -128,7 +128,7 @@ Route::group(['middleware' => ['auth:api']], function($router) {
 //RUTAS protegidas con client key
 Route::group(['middleware' => ['client']], function () {
     //DISEÑOS
-    Route::get("subsidiary/all", 'API\SubsidiariesController@all');
+    Route::get("subsidiary", 'API\SubsidiariesController@all');
 
     //USERS
     Route::post("users/create", 'API\UsersController@create');
