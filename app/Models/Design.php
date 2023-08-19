@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
@@ -12,7 +15,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $updated_at
  * @property string $created_at
  * @property Brand $brand
- * @property Rin[] $rins
+ * @property Rin[] $wheels
+ * @mixin Eloquent
  */
 class Design extends Model
 {
@@ -29,17 +33,17 @@ class Design extends Model
     protected $fillable = ['brand_id', 'name', 'image', 'updated_at', 'created_at'];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function brand()
+    public function brand(): BelongsTo
     {
         return $this->belongsTo('App\Models\Brand');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function rins()
+    public function wheels()
     {
         return $this->hasMany('App\Models\Rin');
     }

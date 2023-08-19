@@ -8,93 +8,69 @@
 
 namespace App\Http\Controllers\API;
 
-use Illuminate\Support\Facades\Input;
+use Exception;
 use Illuminate\Http\Request;
 
 // Models
 use App\Models\Design;
 
-class DesignController {
-
-  public function all() {
-    $desing = Design::with("brand")->all();
-    return $desing;
-  }
-
-  //CREAR UNA NUEVO DISEÑO
-  public function create(Request $r) {
-
-    //$data = json_decode($r->getContent(), true);
-    $data = json_decode(Input::post("data"), true);
-    $desing = new Design();
-    foreach ($data as $column => $value) {
-      $desing->$column = $value;
+class DesignController
+{
+    public function all()
+    {
+        return Design::with("brand")->get();
     }
-    try {
-      if ($desing->save() && $r->hasfile('image')) {
-        $idDesign = $desing->id;
-        $img = $r->file('image');
 
-        if (!$rountMailImg = $this->saveImg($img, $idDesign)) {
-           return ["message" => "error"];
+    public function create(Request $r): array
+    {
+        $data = json_decode($r->getContent(), true);
+        $design = new Design();
+        foreach ($data as $column => $value) {
+            $design->$column = $value;
         }
-        $desing->image = $rountMailImg;
-        $desing->update();
-      }
-      return ["message" => "success"];
-    } catch (Exception $e) {
-      return ["message" => "$e"];
+        $exist = Design::where("name", "=", $design->name)->first();
+        if ($exist) {
+            return ["message" => "Este diseño ya existe."];
+        }
+        return($design->save()) ? ["message" => "success"] : ["message" => "error"];
     }
-  }
 
-  ///OBTENER UN DISEÑO EXISTENTE
-  public function get($id) {
-    $desing = Design::with("brand")->find($id);
-    return $desing;
-  }
-
-  //ACTIALIZAR UN DISEÑO
-  public function update($id, Request $r) {
-    //$data = json_decode($r->getContent(), true);
-    $data = json_decode(Input::post("data"), true);
-    $desing = Design::find($id);
-    foreach ($data as $column => $value) {
-      $desing->$column = $value;
+    public function get($id)
+    {
+        return Design::with("brand")->find($id);
     }
-    if ($r->hasfile('image')) {
-      $idDesign = $desing->id;
-      $img = $r->file('image');
-      $rountMailImg = $this->saveImg($img, $idDesign);
-      if ($rountMailImg == false) {
-        return false;
-      }
-      $desing->image = $rountMailImg;
+
+
+    /**
+     * @param $id
+     * @param Request $r
+     * @return string[]
+     */
+    public function update($id, Request $r): array
+    {
+        $data = json_decode($r->getContent(), true);
+        $design = Design::find($id);
+        foreach ($data as $column => $value) {
+            $design->$column = $value;
+        }
+        $exist = Design::where("name", "=", $design->name)->where("id", "!=", $id)->first();
+        if ($exist) {
+            return ["message" => "Este diseño ya existe."];
+        }
+        return($design->update()) ? ["message" => "success"] : ["message" => "error"];
     }
-    return( $desing->update()) ? ["message" => "success"] : ["message" => "error"];
-  }
 
-  //BORRAR UN DISEÑO
-  public function delete($id) {
-    $desing = Design::find($id);
-    return( $desing->delete()) ? ["message" => "success"] : ["message" => "error"];
-  }
 
-  //GUARDAR UNA IAMGEN
-  private function saveImg($img, $idDesign) {
-    $path = public_path() . "/desing/{$idDesign}";
+    /**
+     * @throws Exception
+     */
+    public function delete($id): array
+    {
+        return(Design::find($id)->delete()) ? ["message" => "success"] : ["message" => "error"];
+    }
 
-    $nameImg = $img->getClientOriginalName();
-
-    //actualizar y guardar la imagen del registro
-    $rountMailImg = "/desing/{$idDesign}}/{$nameImg}";
-
-    return $img->move($path, "$nameImg") ? $rountMailImg : false;
-  }
-
-  //RETORNAR UN DISEÑO POR MARCA
-  public function getByBrand($idBrand) {
-    $desing = Design::where("brand_id","=",$idBrand)->orderBy('name', 'ASC')->get();
-    return $desing;
-  }
-
+    public function getByBrand($idBrand)
+    {
+        return Design::where("brand_id", "=", $idBrand)->orderBy('name', 'ASC')->get();
+    }
 }

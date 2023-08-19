@@ -76,11 +76,11 @@ Route::group(['middleware' => ['auth:api']], function($router) {
 
 
   //DISEÑOS
-  Route::get("design/all", 'API\DesignController@all');
-  Route::post("design/create", 'API\DesignController@create');
-  Route::get("design/get/{id}", 'API\DesignController@get');
-  Route::post("design/update/{id}", 'API\DesignController@update');
-  Route::post("design/delete/{id}", 'API\DesignController@delete');
+  Route::get("design", 'API\DesignController@all');
+  Route::post("design", 'API\DesignController@create');
+  Route::get("design/{id}", 'API\DesignController@get');
+  Route::put("design/{id}", 'API\DesignController@update');
+  Route::delete("design/{id}", 'API\DesignController@delete');
   Route::get("design/byBrand/{idBrand}", 'API\DesignController@getByBrand');
 
   //SLIDES

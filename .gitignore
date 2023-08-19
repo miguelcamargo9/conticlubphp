@@ -16,3 +16,5 @@ composer.phar
 /data
 /databaseVolume
 /new-database
+.idea
+.php-cs-fixer.cache
