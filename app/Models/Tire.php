@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
@@ -11,16 +14,17 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $updated_at
  * @property string $created_at
  * @property Design $design
- * @property InvoiceReference[] $invoiceReferences
+ * @property InvoiceReferences[] $invoiceReferences
+ * @mixin Eloquent
  */
-class Rin extends Model
+class Tire extends Model
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'rin';
+    protected $table = 'tire';
 
     /**
      * @var array
@@ -28,25 +32,25 @@ class Rin extends Model
     protected $fillable = ['design_id', 'name','points_gr','points_rd', 'updated_at', 'created_at'];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function design()
+    public function design(): BelongsTo
     {
         return $this->belongsTo('App\Models\Design');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function invoiceReferences()
+    public function invoiceReferences(): HasMany
     {
         return $this->hasMany('App\Models\InvoiceReference');
     }
-        /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+    /**
+     * @return HasMany
      */
-    public function rinPointsByPerfils()
+    public function tirePointsByProfile(): HasMany
     {
-        return $this->hasMany('App\Models\RinPointsByProfile');
+        return $this->hasMany('App\Models\TirePointsByProfile');
     }
 }

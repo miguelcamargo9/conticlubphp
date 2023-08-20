@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $updated_at
  * @property string $created_at
  * @property Brand $brand
- * @property Rin[] $wheels
+ * @property Tire[] $tires
  * @mixin Eloquent
  */
 class Design extends Model
@@ -43,8 +43,8 @@ class Design extends Model
     /**
      * @return HasMany
      */
-    public function wheels()
+    public function tires(): HasMany
     {
-        return $this->hasMany('App\Models\Rin');
+        return $this->hasMany('App\Models\Tire');
     }
 }

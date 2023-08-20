@@ -8,26 +8,33 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id
- * @property int $invoice_id
  * @property int $tire_id
- * @property int $amount
- * @property Invoice $invoice
+ * @property int $profiles_id
+ * @property int $points
+ * @property Profiles $profile
  * @property Tire $tire
  * @mixin Eloquent
  */
-class InvoiceReferences extends Model
+class TirePointsByProfile extends Model
 {
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'tire_points_by_profile';
+
     /**
      * @var array
      */
-    protected $fillable = ['invoice_id', 'tire_id', 'amount'];
+    protected $fillable = ['tire_id', 'profiles_id', 'points'];
 
     /**
      * @return BelongsTo
      */
-    public function invoice(): BelongsTo
+    public function profile(): BelongsTo
     {
-        return $this->belongsTo('App\Models\Invoice');
+        return $this->belongsTo('App\Models\Profile', 'profiles_id');
     }
 
     /**

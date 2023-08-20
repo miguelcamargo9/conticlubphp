@@ -2,17 +2,20 @@
 
 namespace App\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id
  * @property int $points_id
  * @property int $points_movements_id
  * @property int $points
- * @property Point $point
- * @property PointsMovement $pointsMovement
+ * @property Points $point
+ * @property PointsMovements $pointsMovement
+ * @mixin Eloquent
  */
-class PointsMovimentsDetail extends Model
+class PointsMovementsDetail extends Model
 {
     /**
      * The table associated with the model.
@@ -27,17 +30,17 @@ class PointsMovimentsDetail extends Model
     protected $fillable = ['points_id', 'points_movements_id', 'points'];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function point()
+    public function point(): BelongsTo
     {
         return $this->belongsTo('App\Models\Point', 'points_id');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function pointsMovement()
+    public function pointsMovement(): BelongsTo
     {
         return $this->belongsTo('App\Models\PointsMovement', 'points_movements_id');
     }

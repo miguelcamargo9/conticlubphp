@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -14,228 +15,240 @@ use App\Models\Invoice;
 use App\Models\InvoiceReferences;
 use App\Models\Points;
 use App\Models\PointsMovements;
-use App\Models\PointsMovimentsDetail;
-use App\Models\RinPointsByProfile;
+use App\Models\PointsMovementsDetail;
+use App\Models\TirePointsByProfile;
 use App\User;
 use App\Models\ChangePoints;
 
 class InvoiceController extends BaseController
 {
+    public function create(Request $req): array
+    {
+        $data = json_decode(Input::post("data"), true);
 
-  public function create(Request $req)
-  {
-    $data = json_decode(Input::post("data"), true);
-
-    if (isset($data['sale_date']) && $data['sale_date'] < '2023-05-01') {
-        return ["message" => "error", "detail" => "La fecha de venta no puede ser menor a mayo de 2023."];
-    }
-
-    $rines = json_decode(Input::post("rines"), true);
-    $infoUser = $req->user();
-    $idUser = $infoUser->id;
-    $idSubsidiary = $infoUser->subsidiary_id;
-    $image = $req->file('image');
-    $invoice = new Invoice();
-    $invoice->subsidiary_id = $idSubsidiary;
-    $save = true;
-
-    $invoice->users_id = $idUser;
-    foreach ($data as $column => $value) {
-      $invoice->$column = $value;
-    }
-    try {
-      if ($invoice->save()) {
-        $idInvoice = $invoice->id;
-        if ($req->hasfile('image')) {
-            // Almacenar el archivo en S3 dentro de la carpeta 'invoices'
-            $path = "/files/invoices/{$idUser}/{$idInvoice}-{$image->getClientOriginalName()}";
-            Storage::disk('s3')->put($path , file_get_contents($image));
-
-            $invoice->image = $path;
+        if (isset($data['sale_date']) && $data['sale_date'] < '2023-05-01') {
+            return ["message" => "error", "detail" => "La fecha de venta no puede ser menor a mayo de 2023."];
         }
-        //SI GUARDA BIEN LA IMAGNE DE LA FACTURA
-        if ($invoice->update()) {
-          //BUSCAR EL USUARIO
-          $user = User::find($idUser);
-          $userProfile = $user->profiles_id;
 
-          //GUARDAR LAS REFERENCIAS DE LA FACTURA
-          $totalPoints = 0;
-          foreach ($rines as $rinInfo) {
+        $tires = json_decode(Input::post("tires"), true);
+        $infoUser = $req->user();
+        $idUser = $infoUser->id;
+        $idSubsidiary = $infoUser->subsidiary_id;
+        $image = $req->file('image');
+        $invoice = new Invoice();
+        $invoice->subsidiary_id = $idSubsidiary;
+        $save = true;
 
-            $pointsByPerfil = RinPointsByProfile::where([["rin_id", "=", $rinInfo['rin_id']], ["profiles_id", "=", $userProfile]])->get();
+        $invoice->users_id = $idUser;
+        foreach ($data as $column => $value) {
+            $invoice->$column = $value;
+        }
+        try {
+            if ($invoice->save()) {
+                $idInvoice = $invoice->id;
+                if ($req->hasfile('image')) {
+                    // Store the file in S3 inside the 'invoices' folder
+                    $path = "/files/invoices/{$idUser}/{$idInvoice}-{$image->getClientOriginalName()}";
+                    Storage::disk('s3')->put($path, file_get_contents($image));
 
-            if ((count($pointsByPerfil) >= 1)) {
-              $points = $rinInfo['amount'] * $pointsByPerfil[0]['total_points'];
-              $totalPoints += $points;
-              $invoiceReference = new InvoiceReferences();
-              $invoiceReference->amount = $rinInfo['amount'];
-              $invoiceReference->invoice_id = $idInvoice;
-              $invoiceReference->rin_id = $rinInfo['rin_id'];
-              $invoiceReference->points = $points;
-              if (!$invoiceReference->save()) {
-                $save = false;
-              }
-            } else {
-              return ["message" => "error", "detail" => "Esta referencia de llanta no se encuentra activa en ContiClub"];
-            }
-          }
-          if ($save) {
-            $userActualyPoints = $user->points;
-            $user->points = $userActualyPoints + $totalPoints;
-            if ($user->update()) {
-              $newPoints = new Points();
-              $newPoints->points = $totalPoints;
-              $newPoints->sum_date = date("Y-m-d");
-              $newPoints->state = "complete";
-              $newPoints->invoice_id = $idInvoice;
-              if ($newPoints->save()) {
-                $pointsMovements = new PointsMovements();
-                $pointsMovements->points = $totalPoints;
-                $pointsMovements->type_movement = "sum";
-                $pointsMovements->date_movement = date("Y-m-d");
-                if ($pointsMovements->save()) {
-                  $pointsMovimentsDetail = new PointsMovimentsDetail();
-                  $pointsMovimentsDetail->points = $totalPoints;
-                  $pointsMovimentsDetail->points_id = $newPoints->id;
-                  $pointsMovimentsDetail->points_movements_id = $pointsMovements->id;
-                  $pointsMovimentsDetail->save();
+                    $invoice->image = $path;
                 }
-              }
+                //If the invoice image is saved correctly
+                if ($invoice->update()) {
+                    $user = User::find($idUser);
+                    $userProfile = $user->profiles_id;
+
+                    //Save the invoice references
+                    $totalPoints = 0;
+                    foreach ($tires as $tireInfo) {
+                        $pointsByProfile = TirePointsByProfile::where(
+                            [["tire_id", "=", $tireInfo['tire_id']], ["profiles_id", "=", $userProfile]]
+                        )->get();
+
+                        if ((count($pointsByProfile) >= 1)) {
+                            $points = $tireInfo['amount'] * $pointsByProfile[0]['total_points'];
+                            $totalPoints += $points;
+                            $invoiceReference = new InvoiceReferences();
+                            $invoiceReference->amount = $tireInfo['amount'];
+                            $invoiceReference->invoice_id = $idInvoice;
+                            $invoiceReference->tire_id = $tireInfo['tire_id'];
+                            $invoiceReference->points = $points;
+                            if (!$invoiceReference->save()) {
+                                $save = false;
+                            }
+                        } else {
+                            return [
+                                "message" => "error",
+                                "detail" => "Esta referencia de llanta no se encuentra activa en ContiClub"
+                            ];
+                        }
+                    }
+                    if ($save) {
+                        $currentUserPoints = $user->points;
+                        $user->points = $currentUserPoints + $totalPoints;
+                        if ($user->update()) {
+                            $newPoints = new Points();
+                            $newPoints->points = $totalPoints;
+                            $newPoints->sum_date = date("Y-m-d");
+                            $newPoints->state = "complete";
+                            $newPoints->invoice_id = $idInvoice;
+                            if ($newPoints->save()) {
+                                $pointsMovements = new PointsMovements();
+                                $pointsMovements->points = $totalPoints;
+                                $pointsMovements->type_movement = "sum";
+                                $pointsMovements->date_movement = date("Y-m-d");
+                                if ($pointsMovements->save()) {
+                                    $pointsMovementsDetail = new PointsMovementsDetail();
+                                    $pointsMovementsDetail->points = $totalPoints;
+                                    $pointsMovementsDetail->points_id = $newPoints->id;
+                                    $pointsMovementsDetail->points_movements_id = $pointsMovements->id;
+                                    $pointsMovementsDetail->save();
+                                }
+                            }
+                        }
+                    }
+                    //SI GUARDA LA REFERENCIA DE FACTURA GUARDO GUARDO LOS PUNTOS
+                }
+            } else {
+                $save = false;
             }
-          }
-          //SI GUARDA LA REFERENCIA DE FACTURA GUARDO GUARDO LOS PUNTOS
+        } catch (QueryException $e) {
+            $error = $e->errorInfo;
+            return ($error[0] == "23000") ?
+                ["message" => "error", "detail" => "Ya esta registrada una factura con ese numero"] :
+                ["message" => "error", "detail" => $error[2]];
+        } catch (Exception $e) {
+            return ["message" => "error", "detail" => $e->getMessage()];
         }
-      } else {
-        $save = false;
-      }
-    } catch (\Illuminate\Database\QueryException $e) {
-      $error = $e->errorInfo;
-      return ($error[0] == "23000") ? ["message" => "error", "detail" => "Ya esta registrada una factura con ese numero"] : ["message" => "error", "detail" => $error[2]];
-    } catch (Exception $e) {
-      return ["message" => "error", "detail" => $e->getMessage()];
-    }
-    return ($save) ? ["message" => "success", "currentPoints" => $user->points, "points" => $totalPoints] : ["message" => "error"];
-  }
-
-  public function all()
-  {
-    $facturas = Invoice::with("user:id,name")->with("invoiceReferences.rin.design.brand")->with("points")->get();
-    return $facturas;
-  }
-
-  //Get an existing invoice
-  public function get($id)
-  {
-    $invoice = Invoice::with("user:id,name")->with("invoiceReferences.rin.design.brand")->with("points")->find($id);
-    return $invoice;
-  }
-
-  //ACTUALIZAR EL HISTORIAL DE LOS PUNTOS
-  private function updateHistoryPoints($idPoints, $state, $totalPoints, $newPoints = null)
-  {
-
-    //ACTUALIZO EL REGISTRO DE LOS PUNTOS
-    DB::beginTransaction();
-    try {
-      $point = Points::find($idPoints);
-      if ($newPoints != null) {
-        $point->points = $newPoints;
-      }
-      $point->state = $state;
-      $point->update();
-
-      //GUARDO EL NUEVO MOVIMIENTO QUE SE HIZO DE LOS PUNTOS
-      $pointsMovements = new PointsMovements();
-      $pointsMovements->points = $totalPoints;
-      $pointsMovements->type_movement = "rechazado";
-      $pointsMovements->date_movement = date("Y-m-d");
-      if ($pointsMovements->save()) {
-        $pointsMovimentsDetail = new PointsMovimentsDetail();
-        $pointsMovimentsDetail->points = $totalPoints;
-        $pointsMovimentsDetail->points_id = $idPoints;
-        $pointsMovimentsDetail->points_movements_id = $pointsMovements->id;
-        $pointsMovimentsDetail->save();
-      }
-      //DB::commit();
-      return true;
-    } catch (Exception $e) {
-      //DB::rollback();
-      return false;
-    }
-  }
-
-  //ENDPOINT FOR REJECTD INVOICE
-  public function rejected($id, Request $r)
-  {
-
-    $info = json_decode($r->getContent(), true);
-    $comment = $info["comment_rejected"];
-    $invoice = Invoice::with("invoiceReferences")->with("points")->find($id)->toArray();
-    $invoiceUpdate = Invoice::find($id);
-    $invoiceReference = ($invoice['invoice_references']);
-    $idPoints = ($invoice['points'][0]['id']);
-    $totalPointsInvoice = 0;
-    $saveOK = true;
-    //total de puntos de la factura
-    foreach ($invoiceReference as $ir) {
-      $totalPointsInvoice += $ir['points'];
+        return ($save) ?
+            ["message" => "success", "currentPoints" => $user->points, "points" => $totalPoints] :
+            ["message" => "error"];
     }
 
-    //usuario
-    $user = User::find($invoice['users_id']);
-
-    //TODAS LAS PETICIONES PENDIENTES DEL USUARIO PARA SABER CUATOS PUNTOS TIENE EN TOTAL
-    $chageByUser = ChangePoints::where([["users_id", $user->id], ["state", "espera"]])->orderBy("points")->get()->toArray();
-
-    $pointsApplayUSer = 0;
-    foreach ($chageByUser as $ch) {
-      $pointsApplayUSer += $ch['points'];
+    public function all()
+    {
+        return Invoice::with("user:id,name")->with("invoiceReferences.tire.design.brand")->with("points")->get();
     }
 
-    $totalPointsUser = $user->points + $pointsApplayUSer;
+    //Get an existing invoice
+    public function get($id)
+    {
+        return Invoice::with("user:id,name")->with("invoiceReferences.tire.design.brand")->with("points")->find($id);
+    }
 
-    if (!$this->updateHistoryPoints($idPoints, "rechazado", $totalPointsInvoice)) {
-      $saveOK = false;
-    } else {
-      //actualizar la factura
-      $invoiceUpdate->state = "Rechazada";
-      $invoiceUpdate->comment_rejected = $comment;
-      //actualizo los puntos del usuario
-      $newPointsUSer = $totalPointsUser - $totalPointsInvoice;
+    //Update the history of the points
 
-      //SI NO ALCANZAN LOS NUEVOS PUNTOS DEL USUARIO, RECHAZO AUTOMATICAMENTE LA SOLICITUD DE PRODUCTO
-      foreach ($chageByUser as $ch) {
-        if (($newPointsUSer - $ch['points']) >= 0) {
-          $newPointsUSer -= $ch['points'];
+    /**
+     * @throws Exception
+     */
+    private function updateHistoryPoints($idPoints, $state, $totalPoints, $newPoints = null): bool
+    {
+        //Update the history of the points
+        DB::beginTransaction();
+        try {
+            $point = Points::find($idPoints);
+            if ($newPoints != null) {
+                $point->points = $newPoints;
+            }
+            $point->state = $state;
+            $point->update();
+
+            //Save the new movement that was made of the points
+            $pointsMovements = new PointsMovements();
+            $pointsMovements->points = $totalPoints;
+            $pointsMovements->type_movement = "rechazado";
+            $pointsMovements->date_movement = date("Y-m-d");
+            if ($pointsMovements->save()) {
+                $pointsMovementsDetail = new PointsMovementsDetail();
+                $pointsMovementsDetail->points = $totalPoints;
+                $pointsMovementsDetail->points_id = $idPoints;
+                $pointsMovementsDetail->points_movements_id = $pointsMovements->id;
+                $pointsMovementsDetail->save();
+            }
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    //Reject an invoice
+
+    /**
+     * @throws Exception
+     */
+    public function rejected($id, Request $r): array
+    {
+        $info = json_decode($r->getContent(), true);
+        $comment = $info["comment_rejected"];
+        $invoice = Invoice::with("invoiceReferences")->with("points")->find($id)->toArray();
+        $invoiceUpdate = Invoice::find($id);
+        $invoiceReference = ($invoice['invoice_references']);
+        $idPoints = ($invoice['points'][0]['id']);
+        $totalPointsInvoice = 0;
+        $saveOK = true;
+        //total of points in the invoice
+        foreach ($invoiceReference as $ir) {
+            $totalPointsInvoice += $ir['points'];
+        }
+
+        //User
+        $user = User::find($invoice['users_id']);
+
+        //All pending requests from the user to know how many points you have in total
+        $changeByUser = ChangePoints::where(
+            [["users_id", $user->id], ["state", "espera"]]
+        )->orderBy("points")->get()->toArray();
+
+        $pointsApplyUSer = 0;
+        foreach ($changeByUser as $ch) {
+            $pointsApplyUSer += $ch['points'];
+        }
+
+        $totalPointsUser = $user->points + $pointsApplyUSer;
+
+        if (!$this->updateHistoryPoints($idPoints, "rechazado", $totalPointsInvoice)) {
+            $saveOK = false;
         } else {
-          $nChange = ChangePoints::find($ch['id']);
-          $nChange->state = "rechazado";
-          $nChange->comment = "Rechazada por puntos insuficientes, verifique sus facturas";
-          $nChange->update();
+            //update the invoice
+            $invoiceUpdate->state = "Rechazada";
+            $invoiceUpdate->comment_rejected = $comment;
+
+            //update the points of the user
+            $newPointsUSer = $totalPointsUser - $totalPointsInvoice;
+
+            //If the new user points are not enough, I reject the product request
+            foreach ($changeByUser as $ch) {
+                if (($newPointsUSer - $ch['points']) >= 0) {
+                    $newPointsUSer -= $ch['points'];
+                } else {
+                    $nChange = ChangePoints::find($ch['id']);
+                    $nChange->state = "rechazado";
+                    $nChange->comment = "Rechazada por puntos insuficientes, verifique sus facturas";
+                    $nChange->update();
+                }
+            }
+            $user->points = $newPointsUSer;
+            ($invoiceUpdate->update() && $user->update()) ? DB::commit() : $saveOK = false;
         }
-      }
-      $user->points = $newPointsUSer;
-      ($invoiceUpdate->update() && $user->update()) ? DB::commit() : $saveOK = false;
+
+        return ($saveOK) ? ["message" => "success"] : ["message" => "error"];
     }
 
-    return ($saveOK) ? ["message" => "success"] : ["message" => "error"];
-  }
-
-  //aprobar una factura
-  public function approved($idInvoice, Request $r) {
-    $user = $r->user();
-    if ($user->profiles_id == 4) {
-      $invoiceUpdate = Invoice::find($idInvoice);
-      $invoiceUpdate->state = "Aprobada";
-      return ($invoiceUpdate->update()) ? ["message" => "success"] : ["message" => "error"];
-    } else{
-       return["message" => "No tiene permitodo hacer esta acción"];
+    //Approve an invoice
+    public function approved($idInvoice, Request $r): array
+    {
+        $user = $r->user();
+        if ($user->profiles_id == 4) {
+            $invoiceUpdate = Invoice::find($idInvoice);
+            $invoiceUpdate->state = "Aprobada";
+            return ($invoiceUpdate->update()) ? ["message" => "success"] : ["message" => "error"];
+        } else {
+            return["message" => "No tiene permitodo hacer esta acción"];
+        }
     }
-  }
 
-  public function getByState($state) {
-    $invoice = Invoice::where("state",$state)->with("invoiceReferences")->with("points")->get();
-    return $invoice;
-  }
+    public function getByState($state)
+    {
+        return Invoice::where("state", $state)->with("invoiceReferences")->with("points")->get();
+    }
 }

@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use App\User;
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id
@@ -15,6 +18,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $created_at
  * @property Product $product
  * @property User $user
+ * @mixin Eloquent
  */
 class ChangePoints extends Model
 {
@@ -24,17 +28,17 @@ class ChangePoints extends Model
     protected $fillable = ['product_id', 'users_id', 'state', 'comment', 'approver_id', 'updated_at', 'created_at'];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo('App\Models\Product');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo('App\User', 'users_id');
     }

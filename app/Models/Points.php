@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
@@ -11,7 +14,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $sum_date
  * @property string $state
  * @property Invoice $invoice
- * @property PointsMovimentsDetail[] $pointsMovimentsDetails
+ * @property PointsMovementsDetail[] $pointsMovementsDetails
+ * @mixin Eloquent
  */
 class Points extends Model
 {
@@ -21,18 +25,18 @@ class Points extends Model
     protected $fillable = ['invoice_id', 'points', 'sum_date', 'state'];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function invoice()
+    public function invoice(): BelongsTo
     {
         return $this->belongsTo('App\Models\Invoice');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function pointsMovimentsDetails()
+    public function pointsMovementsDetails(): HasMany
     {
-        return $this->hasMany('App\Models\PointsMovimentsDetail', 'points_id');
+        return $this->hasMany('App\Models\PointsMovementsDetail', 'points_id');
     }
 }

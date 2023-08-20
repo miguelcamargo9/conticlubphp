@@ -2,7 +2,11 @@
 
 namespace App\Models;
 
+use App\User;
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
@@ -12,8 +16,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $price
  * @property string $image
  * @property User $user
- * @property InvoiceReference[] $invoiceReferences
- * @property Point[] $points
+ * @property InvoiceReferences[] $invoiceReferences
+ * @property Points[] $points
+ * @mixin Eloquent
  */
 class Invoice extends Model
 {
@@ -30,25 +35,25 @@ class Invoice extends Model
     protected $fillable = ['users_id', 'sale_date', 'number', 'price', 'image'];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo('App\User', 'users_id');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function invoiceReferences()
+    public function invoiceReferences(): HasMany
     {
         return $this->hasMany('App\Models\InvoiceReferences');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function points()
+    public function points(): HasMany
     {
         return $this->hasMany('App\Models\Points');
     }

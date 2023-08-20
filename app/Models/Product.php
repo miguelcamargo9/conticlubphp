@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
@@ -11,9 +14,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $image
  * @property int $points
  * @property string $state
- * @property ProductCategory $productCategory
- * @property ProductImage[] $productImages
+ * @property ProductCategories $productCategory
+ * @property ProductImages[] $productImages
  * @property WishList[] $wishLists
+ * @mixin Eloquent
  */
 class Product extends Model
 {
@@ -30,25 +34,25 @@ class Product extends Model
     protected $fillable = ['product_categories_id', 'name', 'image', 'points', 'state'];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function productCategory()
+    public function productCategory(): BelongsTo
     {
         return $this->belongsTo('App\Models\ProductCategories', 'product_categories_id');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function productImages()
+    public function productImages(): HasMany
     {
         return $this->hasMany('App\Models\ProductImages');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function wishLists()
+    public function wishLists(): HasMany
     {
         return $this->hasMany('App\Models\WishList');
     }

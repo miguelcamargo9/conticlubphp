@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use Exception;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -18,23 +19,22 @@ use App\Models\Invoice;
 
 class UsersController extends BaseController
 {
-
     use AuthorizesRequests,
         ValidatesRequests;
 
     public function all()
     {
-        $users = User::with("profile")->with("subsidiary")->get();
-        return $users;
+        return User::with("profile")->with("subsidiary")->get();
     }
 
-    //CREAR UN NUEVO USUARIO
-    public function create(Request $req)
+    //Create a new user
+    public function create(Request $req): array
     {
         //$userR=json_decode($r->getContent(), true);
         $userR = json_decode(Input::post("data"), true);
         $image = $req->file('image');
-        $inDb = User::where("identification_number", $userR['identification_number'])->orWhere("email", $userR['email'])->count();
+        $inDb = User::where("identification_number", $userR['identification_number'])
+            ->orWhere("email", $userR['email'])->count();
         $save = true;
 
         if ($inDb <= 0) {
@@ -46,11 +46,11 @@ class UsersController extends BaseController
             if ($myUser->save()) {
                 if ($req->hasfile('image')) {
                     $idUser = $myUser->id;
-                    // Almacenar el archivo en S3 dentro de la carpeta 'images/users'
+                    // Store the file in S3 within the 'images/users' folder
                     $path = "/files/images/users/{$idUser}/{$idUser}-{$image->getClientOriginalName()}";
                     Storage::disk('s3')->put($path, file_get_contents($image));
 
-                    //actualizar y guardar la imagen del registro
+                    // Update the user's image
                     $myUser->image = urlencode($path);
                     if (!$myUser->update()) {
                         $save = false;
@@ -65,22 +65,19 @@ class UsersController extends BaseController
         }
     }
 
-    ///OBTENER UN USUARIO EXISTENTE
     public function get($id)
     {
-        $user = User::with("profile")->with("subsidiary")->find($id);
-        return $user;
+        return User::with("profile")->with("subsidiary")->find($id);
     }
 
-    //ACTIALIZAR UN USUARIO
-    public function update($id, Request $r)
+    public function update($id, Request $r): array
     {
         //$userR = json_decode($r->getContent(), true);
         $user = User::find($id);
         $userR = json_decode(Input::post("data"), true);
         $image = $r->file('image');
         $save = true;
-        if ($userR != NULL) {
+        if ($userR != null) {
             foreach ($userR as $column => $value) {
                 $value = ($column == "password") ? bcrypt($value) : $value;
                 $user->$column = $value;
@@ -93,7 +90,7 @@ class UsersController extends BaseController
 
                 $nomeMainOmg = $image->getClientOriginalName();
                 $image->move($path, "$nomeMainOmg");
-                //actualizar y guardar la imagen del registro
+
                 $rountMailImg = "/users/{$idUser}/$nomeMainOmg";
                 $user->image = urlencode($rountMailImg);
                 if (!$user->update()) {
@@ -103,37 +100,31 @@ class UsersController extends BaseController
         } else {
             $save = false;
         }
-        return ($user->update()) ? ["message" => "success"] : ["message" => "error"];
+        return ($save) ? ["message" => "success"] : ["message" => "error"];
     }
 
-    //ELIMINAR UN USUARIO
-    public function delete($id, Request $r)
+    public function delete($id, Request $r): array
     {
-
         $user = User::find($id);
         $user->state = 2;
         return ($user->update()) ? ["message" => "success"] : ["message" => "error"];
     }
 
-    //USUARIOS CON SUCURSAL
     public function withSubsidiary()
     {
         $users = User::where("subsidiary_id", "!=", "NULL")->with("profile")->with("subsidiary")->get();
         return (empty($users)) ? ["message" => "No se encontraron registros"] : $users;
     }
 
-    //HISTORIA DE REGISTROS DE FACTURAS
     public function historyInvoice($id)
     {
-        $user = User::with("invoices.invoiceReferences.rin.design.brand")->with("invoices.points")->find($id);
-        return $user;
+        return User::with("invoices.invoiceReferences.tire.design.brand")->with("invoices.points")->find($id);
     }
 
-    //FACTURAS DEL USUARIO POR ESTADO
     public function historyInvoiceByState($id, $state)
     {
-        $invoice = Invoice::where([["users_id", $id], ["state", $state]])->with("invoiceReferences")->with("points")->get();
-        return $invoice;
+        return Invoice::where([["users_id", $id], ["state", $state]])
+            ->with("invoiceReferences")->with("points")->get();
     }
 
     public function contactenos(Request $r)
@@ -150,7 +141,7 @@ class UsersController extends BaseController
         }
     }
 
-    private function randomPassword()
+    private function randomPassword(): string
     {
         $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
         $pass = array(); //remember to declare $pass as an array
@@ -162,12 +153,17 @@ class UsersController extends BaseController
         return implode($pass); //turn the array into a string
     }
 
-    //RECUPERAR UNA CONTRASEÑA
-    public function recover(Request $r)
+    public function recover(Request $r): array
     {
         $data  = json_decode($r->getContent(), true);
-        $user = User::where([["email", $data['email']], ["identification_number", $data['identification_number']]])->first();
-        $exitUser = User::where([["email", $data['email']], ["identification_number", $data['identification_number']]])->count();
+        $user = User::where([
+            ["email", $data['email']],
+            ["identification_number", $data['identification_number']]
+        ])->first();
+        $exitUser = User::where([
+            ["email", $data['email']],
+            ["identification_number", $data['identification_number']]
+        ])->count();
         if ($exitUser > 0) {
             try {
                 $datos['name'] = $user->name;

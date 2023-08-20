@@ -13,13 +13,13 @@ use Illuminate\Http\Request;
   |
  */
 Route::post('login', 'API\AccessTokenController@issueToken');
-Route::get("perro", 'API\TestController@dog');
-//RECUPERAR CONTRASEÑA DEL USUARIO
+
+//Password Recovery
 Route::post("users/recover", 'API\UsersController@recover');
-//RUTAS PARA EL ADMINISTRADOR
+//Admin Routes
 Route::group(['middleware' => ['auth:api']], function ($router) {
     Route::get("allprofiles", 'API\ProfilesController@allProfiles');
-    //CRUD PARA LOS USUARIOS
+    //Users
     Route::get("users/all", 'API\UsersController@all');
     Route::get("users/getuser/{id}", 'API\UsersController@get');
     Route::post("users/update/{id}", 'API\UsersController@update');
@@ -29,7 +29,7 @@ Route::group(['middleware' => ['auth:api']], function ($router) {
     Route::put("users/delete/{id}", 'API\UsersController@delete');
     Route::post("users/contactenos", 'API\UsersController@contactenos');
 
-    //PRODUCTOS
+    //Products
     Route::get("products/all", 'API\ProductsController@all');
     Route::post("products/create", 'API\ProductsController@create');
     Route::get("products/get/{id}", 'API\ProductsController@get');
@@ -38,20 +38,20 @@ Route::group(['middleware' => ['auth:api']], function ($router) {
     Route::get("products/byCategory/{idCategory}", 'API\ProductsController@getProductByCategory');
     Route::get("products/categories/all", 'API\ProductsController@getProductCategories');
 
-    //PRODUCTS CATEGORIES
+    //Product Categories
     Route::get("product/category/all", 'API\ProductCategoriesController@all');
     Route::post("product/category/create", 'API\ProductCategoriesController@create');
     Route::get("product/category/get/{id}", 'API\ProductCategoriesController@get');
     Route::put("product/category/update/{id}", 'API\ProductCategoriesController@update');
     Route::delete("product/category/delete/{id}", 'API\ProductCategoriesController@delete');
 
-    //CIUDADES
+    //Cities
     Route::get("cities/all", 'API\CitiesController@all');
     Route::post("cities/create", 'API\CitiesController@create');
     Route::get("cities/get/{id}", 'API\CitiesController@get');
     Route::post("cities/update/{id}", 'API\CitiesController@update');
 
-    //PROFILES
+    //Profiles
     Route::get("profiles/all", 'API\ProfilesController@all');
     Route::post("profiles/create", 'API\ProfilesController@create');
     Route::get("profiles/get/{id}", 'API\ProfilesController@get');
@@ -60,13 +60,13 @@ Route::group(['middleware' => ['auth:api']], function ($router) {
     Route::get('profiles/sellers', 'API\ProfilesController@getSellers')->name('profiles.sellers');
 
 
-    //SUCURSALES
+    //Subsidiaries
     Route::post("subsidiary", 'API\SubsidiariesController@create');
     Route::get("subsidiary/{id}", 'API\SubsidiariesController@get');
     Route::put("subsidiary/{id}", 'API\SubsidiariesController@update');
     Route::delete("subsidiary/{id}", 'API\SubsidiariesController@delete');
 
-    //MARCAS
+    //Brands
     Route::get("brand/all", 'API\BrandController@all');
     Route::post("brand/create", 'API\BrandController@create');
     Route::get("brand/get/{id}", 'API\BrandController@get');
@@ -74,7 +74,7 @@ Route::group(['middleware' => ['auth:api']], function ($router) {
     Route::post("brand/delete/{id}", 'API\BrandController@delete');
 
 
-    //DISEÑOS
+    //Designs
     Route::get("design", 'API\DesignController@all');
     Route::post("design", 'API\DesignController@create');
     Route::get("design/{id}", 'API\DesignController@get');
@@ -82,7 +82,7 @@ Route::group(['middleware' => ['auth:api']], function ($router) {
     Route::delete("design/{id}", 'API\DesignController@delete');
     Route::get("design/byBrand/{idBrand}", 'API\DesignController@getByBrand');
 
-    //SLIDES
+    //Slides
     Route::get("slides/all", 'API\SlidesController@all');
     Route::post("slides/create", 'API\SlidesController@create');
     Route::get("slides/get/{id}", 'API\SlidesController@get');
@@ -90,15 +90,15 @@ Route::group(['middleware' => ['auth:api']], function ($router) {
     Route::delete("slides/delete/{id}", 'API\SlidesController@delete');
     Route::get("slides/position/{position}/{responsive}", 'API\SlidesController@getByPosition');
 
-    //RINES
-    Route::get("rin/all", 'API\RinController@all');
-    Route::post("rin/create", 'API\RinController@create');
-    Route::get("rin/get/{id}", 'API\RinController@get');
-    Route::post("rin/update/{id}", 'API\RinController@update');
-    Route::post("rin/delete/{id}", 'API\RinController@delete');
-    Route::get("rin/byDesign/{idDesign}", 'API\RinController@getByDesign');
+    //Tires
+    Route::get("tire", 'API\TireController@all');
+    Route::post("tire", 'API\TireController@create');
+    Route::get("tire/{id}", 'API\TireController@get');
+    Route::put("tire/{id}", 'API\TireController@update');
+    Route::delete("tire/{id}", 'API\TireController@delete');
+    Route::get("tire/byDesign/{idDesign}", 'API\TireController@getByDesign');
 
-    //INVOICES
+    //Invoices
     Route::get("invoice/all", 'API\InvoiceController@all');
     Route::post("invoice/create", 'API\InvoiceController@create');
     Route::get("invoice/get/{id}", 'API\InvoiceController@get');
@@ -106,7 +106,7 @@ Route::group(['middleware' => ['auth:api']], function ($router) {
     Route::post("invoice/approved/{id}", 'API\InvoiceController@approved');
     Route::get("invoice/getbystate/{state}", 'API\InvoiceController@getByState');
 
-    //CAMBIO DE PRODUCTOS
+    //Product change points
     Route::post("product/applyfor", 'API\ChangePointsController@applyFor');
     Route::post("product/approve/{id}", 'API\ChangePointsController@approve');
     Route::post("product/reject/{id}", 'API\ChangePointsController@reject');
@@ -115,21 +115,21 @@ Route::group(['middleware' => ['auth:api']], function ($router) {
     Route::get("product/applyfor/getbyuser/{id}", 'API\ChangePointsController@GetbyUser');
     Route::get("product/applyfor/get/{id}", 'API\ChangePointsController@get');
 
-    //LISTA DE DESEOS
+    //Wish List
     Route::post("wishlist/create", 'API\WishListController@create');
     Route::get("wishlist/get/{id}", 'API\WishListController@get');
     Route::get("wishlist/all", 'API\WishListController@all');
 
-    //REPORTES
-    Route::get("reportes/invoicebyuser", 'API\RerportController@invoicesByUsers');
+    //Reports
+    Route::get("reports/invoiceByUser", 'API\RerportController@invoicesByUsers');
 });
 
-//RUTAS protegidas con client key
+//Protected routes by client key
 Route::group(['middleware' => ['client']], function () {
-    //DISEÑOS
+    //Designs
     Route::get("subsidiary", 'API\SubsidiariesController@all');
 
-    //USERS
+    //Users
     Route::post("users/create", 'API\UsersController@create');
 });
 
