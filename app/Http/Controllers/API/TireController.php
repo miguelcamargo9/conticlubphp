@@ -37,6 +37,9 @@ class TireController extends BaseController
         if ($exist) {
             return ["message" => "Este código de llanta ya existe"];
         }
+        if (!isset($data['tire_points'])) {
+            return ["message" => "Llanta sin puntos"];
+        }
         if ($tire->save()) {
             $tireId = $tire->id;
 
@@ -74,6 +77,9 @@ class TireController extends BaseController
         if ($exist) {
             return ["message" => "Este código de llanta ya existe"];
         }
+        if (!isset($data['tire_points'])) {
+            return ["message" => "Llanta sin puntos"];
+        }
         if ($tire->update()) {
             TirePointsByProfile::where("tire_id", "=", $tire->id)->delete();
 
@@ -100,7 +106,7 @@ class TireController extends BaseController
 
     public function getByDesign($idDesign)
     {
-        return Tire::where("design_id", "=", $idDesign)->orderBy('name', 'ASC')->get();
+        return Tire::with("design")->where("design_id", "=", $idDesign)->orderBy('name', 'ASC')->get();
     }
 
     /**
