@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
@@ -10,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $updated_at
  * @property string $created_at
  * @property Design[] $designs
+ * @mixin Eloquent
  */
 class Brand extends Model
 {
@@ -26,9 +29,9 @@ class Brand extends Model
     protected $fillable = ['name', 'updated_at', 'created_at'];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function designs()
+    public function designs(): HasMany
     {
         return $this->hasMany('App\Models\Design');
     }

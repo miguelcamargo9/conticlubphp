@@ -46,10 +46,11 @@ Route::group(['middleware' => ['auth:api']], function ($router) {
     Route::delete("product/category/delete/{id}", 'API\ProductCategoriesController@delete');
 
     //Cities
-    Route::get("cities/all", 'API\CitiesController@all');
-    Route::post("cities/create", 'API\CitiesController@create');
-    Route::get("cities/get/{id}", 'API\CitiesController@get');
-    Route::post("cities/update/{id}", 'API\CitiesController@update');
+    Route::get("city", 'API\CitiesController@all');
+    Route::post("city", 'API\CitiesController@create');
+    Route::get("city/{id}", 'API\CitiesController@get');
+    Route::put("city/{id}", 'API\CitiesController@update');
+    Route::delete("city/{id}", 'API\CitiesController@delete');
 
     //Profiles
     Route::get("profiles/all", 'API\ProfilesController@all');

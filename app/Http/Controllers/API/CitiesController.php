@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use Exception;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -10,40 +11,55 @@ use Illuminate\Http\Request;
 // Models
 use App\Models\Cities;
 
-class CitiesController extends BaseController {
-
-  use AuthorizesRequests,
+class CitiesController extends BaseController
+{
+    use AuthorizesRequests,
       ValidatesRequests;
 
-  public function all() {
-    $cities = Cities::all();
-    return $cities;
-  }
-
-  //CREAR UNA NUEVA CIUDAD
-  public function create(Request $r) {
-    $cityR = json_decode($r->getContent(), true);
-    $city = new Cities();
-    foreach ($cityR as $column => $value) {
-      $city->$column = $value;
+    public function all()
+    {
+        return Cities::all();
     }
-    return( $city->save()) ? ["message" => "success"] : ["message" => "error"];
-  }
 
-  ///OBTENER UNA CIUDAD EXISTENTE
-  public function get($id) {
-    $city = Cities::find($id);
-    return $city;
-  }
-
-  //ACTIALIZAR UNA CIUDAD
-  public function update($id,Request $r) {
-    $cityR=json_decode($r->getContent(), true);
-    $city = Cities::find($id);
-    foreach ($cityR as $column => $value) {
-      $city->$column = $value;
+    public function create(Request $req): array
+    {
+        $cityR = json_decode($req->getContent(), true);
+        $city = new Cities();
+        foreach ($cityR as $column => $value) {
+            $city->$column = $value;
+        }
+        $exist = Cities::where("name", "=", $city->name)->first();
+        if ($exist) {
+            return ["message" => "Esta ciudad ya existe"];
+        }
+        return($city->save()) ? ["message" => "success"] : ["message" => "error"];
     }
-    return( $city->update())?["message"=>"success"]:["message"=>"error"];
-  }
 
+    public function get($id)
+    {
+        return Cities::find($id);
+    }
+
+    public function update($id, Request $req): array
+    {
+        $cityR=json_decode($req->getContent(), true);
+        $city = Cities::find($id);
+        foreach ($cityR as $column => $value) {
+            $city->$column = $value;
+        }
+        $exist = Cities::where("name", "=", $city->name)->where("id", "!=", $city->id)->first();
+        if ($exist) {
+            return ["message" => "Esta ciudad ya existe"];
+        }
+        return($city->update())?["message"=>"success"]:["message"=>"error"];
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function delete($id): array
+    {
+        $city = Cities::find($id);
+        return($city->delete()) ? ["message" => "success"] : ["message" => "error"];
+    }
 }
