@@ -15,12 +15,17 @@ use Illuminate\Http\Request;
 //Models
 use App\Models\Tire;
 use App\Models\TirePointsByProfile;
+use App\Models\Profiles;
 
 class TireController extends BaseController
 {
     public function all()
     {
-        return Tire::with("design")->get();
+        $return = [
+            "tires" => Tire::with(["design","tirePointsByProfile.profile"])->get(),
+            "profiles" =>Profiles::notAdmin()->get()
+        ];
+        return $return;
     }
 
     public function create(Request $r): array

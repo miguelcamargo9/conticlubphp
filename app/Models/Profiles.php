@@ -32,4 +32,9 @@ class Profiles extends Model
     {
         return $this->hasMany('App\User', 'profiles_id');
     }
+
+    public function scopeNotAdmin($query)
+    {
+        return $query->whereNotIn('name', [config('constants.profiles.admin'), config('constants.profiles.comprador'), config('constants.profiles.aprobador')]);
+    }
 }

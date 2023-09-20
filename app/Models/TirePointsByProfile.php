@@ -34,7 +34,7 @@ class TirePointsByProfile extends Model
      */
     public function profile(): BelongsTo
     {
-        return $this->belongsTo('App\Models\Profile', 'profiles_id');
+        return $this->belongsTo('App\Models\Profiles', 'profiles_id');
     }
 
     /**

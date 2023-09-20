@@ -66,7 +66,7 @@ class ProfilesController extends BaseController {
 
   public function getSellers()
   {
-      $profiles = Profiles::whereNotIn('name', ['admin', 'comprador', 'aprobador'])->get();
+      $profiles = Profiles::notAdmin()->get();
       return $profiles;
   }
 
