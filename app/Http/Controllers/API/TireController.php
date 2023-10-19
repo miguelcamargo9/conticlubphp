@@ -118,9 +118,15 @@ class TireController extends BaseController
         return($tire->delete()) ? ["message" => "success"] : ["message" => "error"];
     }
 
-    public function getByDesign($idDesign)
+    public function getByDesign($idDesign, Request $req)
     {
-        return Tire::with("design")->where("design_id", "=", $idDesign)->orderBy('name', 'ASC')->get();
+        $userProfileId = $req->user()->profiles_id;
+        return Tire::with("design")
+            ->where("design_id", "=", $idDesign)
+            ->whereHas('tirePointsByProfile', function ($query) use ($userProfileId) {
+                $query->where('profiles_id', $userProfileId);
+            })
+            ->orderBy('name', 'ASC')->get();
     }
 
     /**
