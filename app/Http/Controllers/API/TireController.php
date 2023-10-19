@@ -104,9 +104,18 @@ class TireController extends BaseController
      */
     public function delete($id): array
     {
-        $tire = Tire::find($id);
-        TirePointsByProfile::where("tire_id", "=", $tire->id)->delete();
-        return($tire->delete()) ? ["message" => "success"] : ["message" => "error"];
+        $tire = Tire::with(['TirePointsByProfile','InvoiceReferences'])->find($id);
+        if ($tire->InvoiceReferences->count() > 0){
+            $invoiceId = "";
+            foreach ($tire->InvoiceReferences as $invoiceReference) {
+                $invoiceId .= "$invoiceReference->invoice_id ";
+            }
+            return ["message" => "error", "in_invoices" => $invoiceId];
+        }else{
+            $tire->InvoiceReferences->TirePointsByProfile->delete();
+            $tire->delete();
+            return ["message" => "success"];
+        }
     }
 
     public function getByDesign($idDesign)

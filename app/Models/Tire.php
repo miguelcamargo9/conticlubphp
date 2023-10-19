@@ -44,7 +44,7 @@ class Tire extends Model
      */
     public function invoiceReferences(): HasMany
     {
-        return $this->hasMany('App\Models\InvoiceReference');
+        return $this->hasMany('App\Models\InvoiceReferences');
     }
     /**
      * @return HasMany
