@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\InvoiceReferences;
 use Exception;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
@@ -105,6 +106,14 @@ class TireController extends BaseController
     public function delete($id): array
     {
         $tire = Tire::find($id);
+        if (!$tire) {
+            return ["message" => "Llanta no encontrada"];
+        }
+
+        if (InvoiceReferences::where('tire_id', $tire->id)->exists()) {
+            return ["message" => "No se puede eliminar la llanta, está asignada a una factura"];
+        }
+
         TirePointsByProfile::where("tire_id", "=", $tire->id)->delete();
         return($tire->delete()) ? ["message" => "success"] : ["message" => "error"];
     }
