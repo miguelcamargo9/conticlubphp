@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $amount
  * @property Invoice $invoice
  * @property Tire $tire
+ * @property string $points
  * @mixin Eloquent
  */
 class InvoiceReferences extends Model

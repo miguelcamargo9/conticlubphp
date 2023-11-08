@@ -176,62 +176,71 @@ class InvoiceController extends BaseController
     /**
      * @throws Exception
      */
-    public function rejected($id, Request $r): array
+    public function rejected($id, Request $request): array
     {
-        $info = json_decode($r->getContent(), true);
-        $comment = $info["comment_rejected"];
-        $invoice = Invoice::with("invoiceReferences")->with("points")->find($id)->toArray();
-        $invoiceUpdate = Invoice::find($id);
-        $invoiceReference = ($invoice['invoice_references']);
-        $idPoints = ($invoice['points'][0]['id']);
-        $totalPointsInvoice = 0;
-        $saveOK = true;
-        //total of points in the invoice
-        foreach ($invoiceReference as $ir) {
-            $totalPointsInvoice += $ir['points'];
-        }
+        try {
+            $invoice = Invoice::with(['invoiceReferences', 'user', 'points'])->find($id);
 
-        //User
-        $user = User::find($invoice['users_id']);
+            if (!$invoice) {
+                return ['message' => 'Factura no encontrada'];
+            }
 
-        //All pending requests from the user to know how many points you have in total
-        $changeByUser = ChangePoints::where(
-            [["users_id", $user->id], ["state", "espera"]]
-        )->orderBy("points")->get()->toArray();
+            $comment = $request->input('comment_rejected');
 
-        $pointsApplyUSer = 0;
-        foreach ($changeByUser as $ch) {
-            $pointsApplyUSer += $ch['points'];
-        }
+            $totalPointsInvoice = $invoice->invoiceReferences->sum('points');
+            $user = $invoice->user;
 
-        $totalPointsUser = $user->points + $pointsApplyUSer;
+            $idPoints = null;
 
-        if (!$this->updateHistoryPoints($idPoints, "rechazado", $totalPointsInvoice)) {
-            $saveOK = false;
-        } else {
-            //update the invoice
-            $invoiceUpdate->state = "Rechazada";
-            $invoiceUpdate->comment_rejected = $comment;
-
-            //update the points of the user
-            $newPointsUSer = $totalPointsUser - $totalPointsInvoice;
-
-            //If the new user points are not enough, I reject the product request
-            foreach ($changeByUser as $ch) {
-                if (($newPointsUSer - $ch['points']) >= 0) {
-                    $newPointsUSer -= $ch['points'];
-                } else {
-                    $nChange = ChangePoints::find($ch['id']);
-                    $nChange->state = "rechazado";
-                    $nChange->comment = "Rechazada por puntos insuficientes, verifique sus facturas";
-                    $nChange->update();
+            if (!empty($invoice->points)) {
+                $points = $invoice->points->first();
+                if (!empty($points->id)) {
+                    $idPoints = $points->id;
                 }
             }
-            $user->points = $newPointsUSer;
-            ($invoiceUpdate->update() && $user->update()) ? DB::commit() : $saveOK = false;
-        }
 
-        return ($saveOK) ? ["message" => "success"] : ["message" => "error"];
+            //All pending requests from the user to know how many points you have in total
+            $changeByUser = ChangePoints::where(
+                [["users_id", $user->id], ["state", "espera"]]
+            )->orderBy("points")->get()->toArray();
+
+            $pointsApplyUSer = 0;
+            foreach ($changeByUser as $ch) {
+                $pointsApplyUSer += $ch['points'];
+            }
+
+            $totalPointsUser = $user->points + $pointsApplyUSer;
+
+            $saveOK = true;
+
+            if ($idPoints && !$this->updateHistoryPoints($idPoints, "rechazado", $totalPointsInvoice)) {
+                $saveOK = false;
+            } else {
+                //update the invoice
+                $invoice->state = "Rechazada";
+                $invoice->rejection_comment = $comment;
+
+                //update the points of the user
+                $newPointsUSer = $totalPointsUser - $totalPointsInvoice;
+
+                //If the new user points are not enough, I reject the product request
+                foreach ($changeByUser as $ch) {
+                    if (($newPointsUSer - $ch['points']) >= 0) {
+                        $newPointsUSer -= $ch['points'];
+                    } else {
+                        $nChange = ChangePoints::find($ch['id']);
+                        $nChange->state = "rechazado";
+                        $nChange->comment = "Rechazada por puntos insuficientes, verifique sus facturas";
+                        $nChange->update();
+                    }
+                }
+                $user->points = $newPointsUSer;
+                ($invoice->update() && $user->update()) ? DB::commit() : $saveOK = false;
+            }
+            return ($saveOK) ? ["message" => "success"] : ["message" => "error"];
+        } catch (Exception $e) {
+            return ['message' => 'Ha ocurrido un error al rechazar la factura'];
+        }
     }
 
     //Approve an invoice

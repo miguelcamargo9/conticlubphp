@@ -18,6 +18,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property User $user
  * @property InvoiceReferences[] $invoiceReferences
  * @property Points[] $points
+ * @property string $state
+ * @property string $rejection_comment
  * @mixin Eloquent
  */
 class Invoice extends Model
