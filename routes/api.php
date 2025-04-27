@@ -71,8 +71,8 @@ Route::group(['middleware' => ['auth:api']], function ($router) {
     Route::get("brand/all", 'API\BrandController@all');
     Route::post("brand/create", 'API\BrandController@create');
     Route::get("brand/get/{id}", 'API\BrandController@get');
-    Route::post("brand/update/{id}", 'API\BrandController@update');
-    Route::post("brand/delete/{id}", 'API\BrandController@delete');
+    Route::put("brand/update/{id}", 'API\BrandController@update');
+    Route::delete("brand/delete/{id}", 'API\BrandController@delete');
 
 
     //Designs
