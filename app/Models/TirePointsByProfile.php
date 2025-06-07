@@ -11,7 +11,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $tire_id
  * @property int $profiles_id
  * @property int $points
- * @property Profiles $profile
+ * @property int $points_general
+ * @property int points_uhp
+ * @property int total_points
+ * @property Profile $profile
  * @property Tire $tire
  * @mixin Eloquent
  */
@@ -34,7 +37,7 @@ class TirePointsByProfile extends Model
      */
     public function profile(): BelongsTo
     {
-        return $this->belongsTo('App\Models\Profiles', 'profiles_id');
+        return $this->belongsTo('App\Models\Profile', 'profiles_id');
     }
 
     /**

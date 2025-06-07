@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\User;
 use Eloquent;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -12,9 +13,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $name
  * @property ProfilesMenu[] $profilesMenus
  * @property User[] $users
+ * @method static Builder|Profile notAdmin()
  * @mixin Eloquent
  */
-class Profiles extends Model
+class Profile extends Model
 {
     /**
      * @var array
@@ -37,7 +39,7 @@ class Profiles extends Model
         return $this->hasMany('App\User', 'profiles_id');
     }
 
-    public function scopeNotAdmin($query)
+    public function scopeNotAdmin(Builder $query): Builder
     {
         return $query->whereNotIn(
             'name',

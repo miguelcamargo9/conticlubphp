@@ -6,24 +6,25 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class Contactenos extends Mailable {
-
-  use Queueable,
+class Contactenos extends Mailable
+{
+    use Queueable,
       SerializesModels;
 
-  public $data;
+    public $data;
 
-  /**
-   * Create a new message instance.
-   *
-   * @return void
-   */
-  public function __construct($data) {
-    $this->data = $data;
-  }
+    /**
+     * Create a new message instance.
+     *
+     * @return void
+     */
+    public function __construct($data)
+    {
+        $this->data = $data;
+    }
 
-  public function build() {
-    return $this->view('mails.contactenos')->subject($this->data['asunto']);
-  }
-
+    public function build(): Contactenos
+    {
+        return $this->view('mails.contactenos')->subject($this->data['asunto']);
+    }
 }

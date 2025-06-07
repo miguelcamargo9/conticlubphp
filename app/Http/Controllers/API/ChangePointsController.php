@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\ChangePoints;
 use App\Models\Product;
 use App\User;
-use App\Models\Points;
-use App\Models\PointsMovements;
+use App\Models\Point;
+use App\Models\PointsMovement;
 use App\Models\PointsMovementsDetail;
 use App\Models\Invoice;
 
@@ -53,13 +53,13 @@ class ChangePointsController extends BaseController
         //Update the record of the points
         DB::beginTransaction();
         try {
-            $point = Points::find($idPoints);
+            $point = Point::find($idPoints);
             $point->points = $newPoints;
             $point->state = $state;
             $point->update();
 
             //Save the new movement of the points
-            $pointsMovements = new PointsMovements();
+            $pointsMovements = new PointsMovement();
             $pointsMovements->points = $totalPoints;
             $pointsMovements->type_movement = "res";
             $pointsMovements->date_movement = date("Y-m-d");
@@ -81,7 +81,7 @@ class ChangePointsController extends BaseController
                     default:
                         break;
                 }
-                $invoice->state = $iState;
+                $invoice->state = $iState ?? "";
                 $invoice->update();
             }
             //DB::commit();
@@ -154,7 +154,7 @@ class ChangePointsController extends BaseController
                 return["message" => "error", "detail" => "No se encontraron facturas del usuario"];
             }
         } else {
-            return["message" => "No tiene permitodo hacer esta acción"];
+            return["message" => "No tiene permitido hacer esta acción"];
         }
     }
 
@@ -234,7 +234,7 @@ class ChangePointsController extends BaseController
     }
 
     //Update the state of the change points for a product to "comprado"
-    public function buyed($id, Request $r): array
+    public function bought($id, Request $r): array
     {
         $change = ChangePoints::find($id);
         $user = $r->user();

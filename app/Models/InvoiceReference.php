@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $points
  * @mixin Eloquent
  */
-class InvoiceReferences extends Model
+class InvoiceReference extends Model
 {
     /**
      * @var array

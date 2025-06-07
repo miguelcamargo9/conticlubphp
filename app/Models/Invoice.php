@@ -15,9 +15,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $number
  * @property string $price
  * @property string $image
+ * @property int $subsidiary_id
  * @property User $user
- * @property InvoiceReferences[] $invoiceReferences
- * @property Points[] $points
+ * @property InvoiceReference[] $invoiceReferences
+ * @property Point[] $points
  * @property string $state
  * @property string $rejection_comment
  * @mixin Eloquent
@@ -49,7 +50,7 @@ class Invoice extends Model
      */
     public function invoiceReferences(): HasMany
     {
-        return $this->hasMany('App\Models\InvoiceReferences');
+        return $this->hasMany('App\Models\InvoiceReference');
     }
 
     /**
@@ -57,6 +58,6 @@ class Invoice extends Model
      */
     public function points(): HasMany
     {
-        return $this->hasMany('App\Models\Points');
+        return $this->hasMany('App\Models\Point');
     }
 }

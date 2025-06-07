@@ -11,10 +11,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $id
  * @property int $design_id
  * @property string $name
+ * @property int $points_gr
+ * @property int $points_rd
+ * @property string $tire_code
  * @property string $updated_at
  * @property string $created_at
  * @property Design $design
- * @property InvoiceReferences[] $invoiceReferences
+ * @property InvoiceReference[] $invoiceReferences
  * @mixin Eloquent
  */
 class Tire extends Model

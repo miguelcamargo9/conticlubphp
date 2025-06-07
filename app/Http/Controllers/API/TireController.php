@@ -8,7 +8,6 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Models\InvoiceReferences;
 use Exception;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
@@ -16,17 +15,17 @@ use Illuminate\Http\Request;
 //Models
 use App\Models\Tire;
 use App\Models\TirePointsByProfile;
-use App\Models\Profiles;
+use App\Models\Profile;
+use App\Models\InvoiceReference;
 
 class TireController extends BaseController
 {
     public function all()
     {
-        $return = [
+        return [
             "tires" => Tire::with(["design","tirePointsByProfile.profile"])->get(),
-            "profiles" =>Profiles::notAdmin()->get()
+            "profiles" => Profile::notAdmin()->get()
         ];
-        return $return;
     }
 
     public function create(Request $r): array
@@ -110,7 +109,7 @@ class TireController extends BaseController
             return ["message" => "Llanta no encontrada"];
         }
 
-        if (InvoiceReferences::where('tire_id', $tire->id)->exists()) {
+        if (InvoiceReference::where('tire_id', $tire->id)->exists()) {
             return ["message" => "No se puede eliminar la llanta, está asignada a una factura"];
         }
 
