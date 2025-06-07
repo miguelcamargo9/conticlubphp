@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 // Models
+use App\Models\Invoice;
 use App\User;
 use DB;
 
@@ -41,5 +42,35 @@ class ReportController
             $user->vencidos = $rExpired[0]->vencidos;
         }
         return $users;
+    }
+
+    public function fullInvoicesReport()
+    {
+        $invoices = Invoice::with([
+            'user.subsidiary',
+            'invoiceReferences.tire.design.brand'
+        ])
+            ->orderBy('sale_date', 'desc')
+            ->orderBy('number', 'desc')->get();
+
+        $report = [];
+
+        foreach ($invoices as $invoice) {
+            foreach ($invoice->invoiceReferences as $ref) {
+                $report[] = [
+                    'Punto de venta'     => optional($invoice->user->subsidiary)->name,
+                    'Distribuidor'       => optional($invoice->user)->name,
+                    'Fecha factura'      => $invoice->sale_date,
+                    'Número de factura'  => $invoice->number,
+                    'Costo Total'        => $invoice->price,
+                    'Marca'              => optional($ref->tire->design->brand)->name,
+                    'Diseño'             => optional($ref->tire->design)->name,
+                    'Medida'             => $ref->tire->name,
+                    'Cantidad'           => $ref->amount,
+                ];
+            }
+        }
+
+        return response()->json($report);
     }
 }

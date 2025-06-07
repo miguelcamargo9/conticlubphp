@@ -138,6 +138,7 @@ Route::group(['middleware' => ['auth:api']], function () {
 
     //Reports
     Route::get("reports/invoiceByUser", [ReportController::class, 'invoicesByUsers']);
+    Route::get('reports/invoices/full', [ReportController::class, 'fullInvoicesReport']);
 });
 
 //Protected routes by client key
