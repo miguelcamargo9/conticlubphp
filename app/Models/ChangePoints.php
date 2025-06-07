@@ -12,7 +12,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $product_id
  * @property int $users_id
  * @property string $state
+ * @Property int $points
  * @property string $comment
+ * @property string $buyer_comment
+ * @property string $purchase_date
+ * @Property int $buyer_id
  * @property int $approver_id
  * @property string $updated_at
  * @property string $created_at

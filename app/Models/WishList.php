@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use App\User;
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $idwish_list
@@ -10,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $users_id
  * @property Product $product
  * @property User $user
+ * @mixin Eloquent
  */
 class WishList extends Model
 {
@@ -33,17 +37,17 @@ class WishList extends Model
     protected $fillable = ['product_id', 'users_id'];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function product()
+    public function product(): BelongsTo
     {
         return $this->belongsTo('App\Models\Product');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo('App\User', 'users_id');
     }

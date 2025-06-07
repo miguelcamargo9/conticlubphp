@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Input;
 
 // Models
 use App\Models\Product;
-use App\Models\ProductImages;
-use App\Models\ProductCategories;
+use App\Models\ProductImage;
+use App\Models\ProductCategory;
 use Illuminate\Support\Facades\Storage;
 
 class ProductsController extends BaseController
@@ -17,8 +17,7 @@ class ProductsController extends BaseController
 
     public function all()
     {
-        $producs = Product::where("state", "1")->with("productCategory")->get();
-        return $producs;
+        return Product::where("state", "1")->with("productCategory")->get();
     }
 
     public function create(Request $req)
@@ -35,14 +34,14 @@ class ProductsController extends BaseController
             $newProduct->$column = $value;
         }
 
-        $category = ProductCategories::find($idCategory);
+        $category = ProductCategory::find($idCategory);
         $ameCategory = $category->path;
 
         if ($newProduct->save()) {
             $idProduct = $newProduct->id;
 
             // Almacenar el archivo en S3 dentro de la carpeta 'products'
-            $path = "/files/products/{$ameCategory}/{$idProduct}/{$idProduct}-{$mainImage->getClientOriginalName()}";
+            $path = "/files/products/$ameCategory/$idProduct/$idProduct-{$mainImage->getClientOriginalName()}";
             Storage::disk('s3')->put($path, file_get_contents($mainImage));
 
             //actualizar y guardar la imagen del registro
@@ -51,13 +50,13 @@ class ProductsController extends BaseController
             if ($req->hasfile('images')) {
                 foreach ($images as $file) {
                     // Almacenar el archivo en S3 dentro de la carpeta 'products'
-                    $path = "/files/products/{$ameCategory}/{$idProduct}/{$idProduct}-{$file->getClientOriginalName()}";
+                    $path = "/files/products/$ameCategory/$idProduct/$idProduct-{$file->getClientOriginalName()}";
                     Storage::disk('s3')->put($path, file_get_contents($file));
 
-                    $productImgs = new ProductImages();
-                    $productImgs->image = $path;
-                    $productImgs->product_id = $idProduct;
-                    $productImgs->save();
+                    $productImages = new ProductImage();
+                    $productImages->image = $path;
+                    $productImages->product_id = $idProduct;
+                    $productImages->save();
                 }
             }
         }
@@ -69,23 +68,22 @@ class ProductsController extends BaseController
     ///OBTENER UN PRODUCTO EXISTENTE
     public function get($id)
     {
-        $product = Product::with("productCategory")->find($id);
-        return $product;
+        return Product::with("productCategory")->find($id);
     }
 
-    //Obetenr un producto por idCategory
+    //Obtener un producto por idCategory
     public function getProductByCategory($idCategory)
     {
-        $products = Product::with("productCategory")->where([["product_categories_id", "=", $idCategory], ["state", "1"]])->get();
-        return $products;
+        return Product::with("productCategory")
+            ->where([["product_categories_id", "=", $idCategory], ["state", "1"]])->get();
     }
 
     public function getProductCategories()
     {
-        return ProductCategories::all();
+        return ProductCategory::all();
     }
 
-    //ACTIALIZAR UN PRODUCTO
+    //ACTUALIZAR UN PRODUCTO
     public function update($id, Request $req)
     {
         //$data = json_decode($r->getContent(), true);
@@ -93,7 +91,7 @@ class ProductsController extends BaseController
 
         $product = Product::find($id);
         $idCategory = $product->product_categories_id;
-        $category = ProductCategories::find($idCategory);
+        $category = ProductCategory::find($idCategory);
 
         $pathCategory = $category['path'];
 
@@ -105,7 +103,7 @@ class ProductsController extends BaseController
             $idProduct = $product->id;
 
             // Almacenar el archivo en S3 dentro de la carpeta 'products'
-            $path = "/files/products/{$pathCategory}/{$idProduct}/{$idProduct}-{$img->getClientOriginalName()}";
+            $path = "/files/products/$pathCategory/$idProduct/$idProduct-{$img->getClientOriginalName()}";
             Storage::disk('s3')->put($path, file_get_contents($img));
 
             //actualizar y guardar la imagen del registro

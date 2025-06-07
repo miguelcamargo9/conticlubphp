@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property PointsMovementsDetail[] $pointsMovementsDetails
  * @mixin Eloquent
  */
-class Points extends Model
+class Point extends Model
 {
     /**
      * @var array

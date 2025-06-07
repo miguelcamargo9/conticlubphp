@@ -47,7 +47,7 @@ class UsersController extends BaseController
                 if ($req->hasfile('image')) {
                     $idUser = $myUser->id;
                     // Store the file in S3 within the 'images/users' folder
-                    $path = "/files/images/users/{$idUser}/{$idUser}-{$image->getClientOriginalName()}";
+                    $path = "/files/images/users/$idUser/$idUser-{$image->getClientOriginalName()}";
                     Storage::disk('s3')->put($path, file_get_contents($image));
 
                     // Update the user's image
@@ -86,13 +86,13 @@ class UsersController extends BaseController
         if ($user->update()) {
             if ($r->hasfile('image')) {
                 $idUser = $user->id;
-                $path = public_path() . "/users/{$idUser}";
+                $path = public_path() . "/users/$idUser";
 
                 $nomeMainOmg = $image->getClientOriginalName();
                 $image->move($path, "$nomeMainOmg");
 
-                $rountMailImg = "/users/{$idUser}/$nomeMainOmg";
-                $user->image = urlencode($rountMailImg);
+                $routeMailImg = "/users/$idUser/$nomeMainOmg";
+                $user->image = urlencode($routeMailImg);
                 if (!$user->update()) {
                     $save = false;
                 }
@@ -103,7 +103,7 @@ class UsersController extends BaseController
         return ($save) ? ["message" => "success"] : ["message" => "error"];
     }
 
-    public function delete($id, Request $r): array
+    public function delete($id): array
     {
         $user = User::find($id);
         $user->state = 2;
@@ -133,7 +133,6 @@ class UsersController extends BaseController
         $datos = json_decode($r->getContent(), true);
         $datos['uname'] = $infoUser->name;
         try {
-            //      Mail::to("miguelcamargo9@gmail.com")->send(new Contactenos($datos));
             Mail::to(["conticlub@lupdup.com", "carloslopez@introcrea.com"])->send(new Contactenos($datos));
             return ["message" => "success"];
         } catch (Exception $e) {
@@ -143,7 +142,7 @@ class UsersController extends BaseController
 
     private function randomPassword(): string
     {
-        $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        $alphabet = 'abcdefghilkmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
         $pass = array(); //remember to declare $pass as an array
         $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
         for ($i = 0; $i < 6; $i++) {
@@ -171,7 +170,7 @@ class UsersController extends BaseController
                 $datos['passwd'] = $this->randomPassword();
                 $user->password = bcrypt($datos['passwd']);
                 if ($user->update()) {
-                    $email = Mail::to($user->email)->send(new Recover($datos));
+                    Mail::to($user->email)->send(new Recover($datos));
                     return ["message" => "success"];
                 } else {
                     return ["message" => "error"];
@@ -180,7 +179,7 @@ class UsersController extends BaseController
                 return ["message" => "error"];
             }
         } else {
-            return ["message" => "error", "detail" => "No se encontro usuario con esos datos"];
+            return ["message" => "error", "detail" => "No se encontró usuario con esos datos"];
         }
     }
 }

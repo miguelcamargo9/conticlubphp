@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $points_id
  * @property int $points_movements_id
  * @property int $points
- * @property Points $point
- * @property PointsMovements $pointsMovement
+ * @property Point $point
+ * @property PointsMovement $pointsMovement
  * @mixin Eloquent
  */
 class PointsMovementsDetail extends Model

@@ -9,7 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticate;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
 use App\Models\Cities;
-use App\Models\Profiles;
+use App\Models\Profile;
 use App\Models\Invoice;
 use App\Models\WishList;
 
@@ -26,8 +26,9 @@ use App\Models\WishList;
  * @property string $identification_type
  * @property boolean $state
  * @property int $points
+ * @property string|null $image
  * @property Cities $city
- * @property Profiles $profile
+ * @property Profile $profile
  * @property Invoice[] $invoices
  * @property WishList[] $wishLists
  * @mixin Eloquent
@@ -54,7 +55,7 @@ class User extends Authenticate
      */
     public function subsidiary(): BelongsTo
     {
-        return $this->belongsTo('App\Models\Subsidiaries', 'subsidiary_id');
+        return $this->belongsTo('App\Models\Subsidiary', 'subsidiary_id');
     }
 
     /**
@@ -62,7 +63,7 @@ class User extends Authenticate
      */
     public function profile(): BelongsTo
     {
-        return $this->belongsTo('App\Models\Profiles', 'profiles_id');
+        return $this->belongsTo('App\Models\Profile', 'profiles_id');
     }
 
     /**

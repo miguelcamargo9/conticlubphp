@@ -18,3 +18,4 @@ composer.phar
 /new-database
 .idea
 .php-cs-fixer.cache
+.phpstorm.meta.php

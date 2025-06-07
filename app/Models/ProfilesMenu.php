@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id
@@ -10,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $menu_id
  * @property Menu $menu
  * @property Profile $profile
+ * @mixin Eloquent
  */
 class ProfilesMenu extends Model
 {
@@ -26,18 +29,18 @@ class ProfilesMenu extends Model
     protected $fillable = ['profiles_id', 'menu_id'];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function menu()
+    public function menu(): BelongsTo
     {
-        return $this->belongsTo('App\Models\Models\Menu');
+        return $this->belongsTo('App\Models\Menu');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function profile()
+    public function profile(): BelongsTo
     {
-        return $this->belongsTo('App\Models\Models\Profile', 'profiles_id');
+        return $this->belongsTo('App\Models\Profile', 'profiles_id');
     }
 }

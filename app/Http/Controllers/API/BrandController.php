@@ -1,11 +1,5 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace App\Http\Controllers\API;
 
 use Exception;
@@ -17,7 +11,8 @@ use App\Models\Brand;
 
 class BrandController
 {
-    public function all() {
+    public function all()
+    {
         return Brand::all();
     }
 
@@ -48,7 +43,7 @@ class BrandController
         return Brand::find($id);
     }
 
-    public function update($id, Request $r)
+    public function update($id, Request $r): array
     {
         $data = json_decode($r->getContent(), true);
         $brand = Brand::find($id);
@@ -68,11 +63,10 @@ class BrandController
         return ($brand->update()) ? ["message" => "success"] : ["message" => "error"];
     }
 
-
     /**
      * @throws Exception
      */
-    public function delete($id)
+    public function delete($id): array
     {
         $brand = Brand::find($id);
         return($brand->delete()) ? ["message" => "success"] : ["message" => "error"];

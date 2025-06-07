@@ -12,9 +12,9 @@ use Illuminate\Support\Facades\Storage;
 
 // Models
 use App\Models\Invoice;
-use App\Models\InvoiceReferences;
-use App\Models\Points;
-use App\Models\PointsMovements;
+use App\Models\InvoiceReference;
+use App\Models\Point;
+use App\Models\PointsMovement;
 use App\Models\PointsMovementsDetail;
 use App\Models\TirePointsByProfile;
 use App\User;
@@ -43,12 +43,16 @@ class InvoiceController extends BaseController
         foreach ($data as $column => $value) {
             $invoice->$column = $value;
         }
+
+        $user = null;
+        $totalPoints = 0;
+
         try {
             if ($invoice->save()) {
                 $idInvoice = $invoice->id;
                 if ($req->hasfile('image')) {
                     // Store the file in S3 inside the 'invoices' folder
-                    $path = "/files/invoices/{$idUser}/{$idInvoice}-{$image->getClientOriginalName()}";
+                    $path = "/files/invoices/$idUser/$idInvoice-{$image->getClientOriginalName()}";
                     Storage::disk('s3')->put($path, file_get_contents($image));
 
                     $invoice->image = $path;
@@ -59,7 +63,6 @@ class InvoiceController extends BaseController
                     $userProfile = $user->profiles_id;
 
                     //Save the invoice references
-                    $totalPoints = 0;
                     foreach ($tires as $tireInfo) {
                         $pointsByProfile = TirePointsByProfile::where(
                             [["tire_id", "=", $tireInfo['tire_id']], ["profiles_id", "=", $userProfile]]
@@ -68,7 +71,7 @@ class InvoiceController extends BaseController
                         if ((count($pointsByProfile) >= 1)) {
                             $points = $tireInfo['amount'] * $pointsByProfile[0]['total_points'];
                             $totalPoints += $points;
-                            $invoiceReference = new InvoiceReferences();
+                            $invoiceReference = new InvoiceReference();
                             $invoiceReference->amount = $tireInfo['amount'];
                             $invoiceReference->invoice_id = $idInvoice;
                             $invoiceReference->tire_id = $tireInfo['tire_id'];
@@ -87,13 +90,13 @@ class InvoiceController extends BaseController
                         $currentUserPoints = $user->points;
                         $user->points = $currentUserPoints + $totalPoints;
                         if ($user->update()) {
-                            $newPoints = new Points();
+                            $newPoints = new Point();
                             $newPoints->points = $totalPoints;
                             $newPoints->sum_date = date("Y-m-d");
                             $newPoints->state = "complete";
                             $newPoints->invoice_id = $idInvoice;
                             if ($newPoints->save()) {
-                                $pointsMovements = new PointsMovements();
+                                $pointsMovements = new PointsMovement();
                                 $pointsMovements->points = $totalPoints;
                                 $pointsMovements->type_movement = "sum";
                                 $pointsMovements->date_movement = date("Y-m-d");
@@ -136,25 +139,20 @@ class InvoiceController extends BaseController
         return Invoice::with("user:id,name")->with("invoiceReferences.tire.design.brand")->with("points")->find($id);
     }
 
-    //Update the history of the points
-
     /**
+     * Update the history of the points
      * @throws Exception
      */
-    private function updateHistoryPoints($idPoints, $state, $totalPoints, $newPoints = null): bool
+    private function updateHistoryPoints($idPoints, $totalPoints): bool
     {
-        //Update the history of the points
         DB::beginTransaction();
         try {
-            $point = Points::find($idPoints);
-            if ($newPoints != null) {
-                $point->points = $newPoints;
-            }
-            $point->state = $state;
+            $point = Point::find($idPoints);
+            $point->state = "rechazado";
             $point->update();
 
             //Save the new movement that was made of the points
-            $pointsMovements = new PointsMovements();
+            $pointsMovements = new PointsMovement();
             $pointsMovements->points = $totalPoints;
             $pointsMovements->type_movement = "rechazado";
             $pointsMovements->date_movement = date("Y-m-d");
@@ -213,7 +211,7 @@ class InvoiceController extends BaseController
 
             $saveOK = true;
 
-            if ($idPoints && !$this->updateHistoryPoints($idPoints, "rechazado", $totalPointsInvoice)) {
+            if ($idPoints && !$this->updateHistoryPoints($idPoints, $totalPointsInvoice)) {
                 $saveOK = false;
             } else {
                 //update the invoice
@@ -252,7 +250,7 @@ class InvoiceController extends BaseController
             $invoiceUpdate->state = "Aprobada";
             return ($invoiceUpdate->update()) ? ["message" => "success"] : ["message" => "error"];
         } else {
-            return["message" => "No tiene permitodo hacer esta acción"];
+            return["message" => "No tiene permitido hacer esta acción"];
         }
     }
 

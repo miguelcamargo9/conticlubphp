@@ -2,14 +2,18 @@
 
 namespace App\Models;
 
+use Eloquent;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
  * @property string $name
+ * @property string $path
  * @property Product[] $products
+ * @mixin Eloquent
  */
-class ProductCategories extends Model
+class ProductCategory extends Model
 {
     /**
      * @var array
@@ -17,9 +21,9 @@ class ProductCategories extends Model
     protected $fillable = ['name'];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
-    public function products()
+    public function products(): HasMany
     {
         return $this->hasMany('App\Models\Product', 'product_categories_id');
     }
