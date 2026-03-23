@@ -151,7 +151,11 @@ class ChangePointsController extends BaseController
                 }
                 return($saveOK) ? ["message" => "success"] : ["message" => "error"];
             } else {
-                return["message" => "error", "detail" => "No se encontraron facturas del usuario"];
+                // No hay puntos en facturas, pero ya fueron descontados en applyFor
+                $change->comment = ($info['comment'] != null) ? $info['comment'] : null;
+                $change->state = "aprobado";
+                $change->approver_id = $user->id;
+                return ($change->update()) ? ["message" => "success"] : ["message" => "error"];
             }
         } else {
             return["message" => "No tiene permitido hacer esta acción"];
