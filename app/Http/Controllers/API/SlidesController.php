@@ -6,7 +6,6 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Storage;
 
 // Models
@@ -21,7 +20,7 @@ class SlidesController extends BaseController
 
     public function create(Request $r)
     {
-        $infoSlide = json_decode(Input::post("data"), true);
+        $infoSlide = json_decode($r->input("data"), true);
         $mainImage = $r->file('image');
 
         $newSlide = new Slides();
@@ -57,7 +56,7 @@ class SlidesController extends BaseController
 
     public function update($id, Request $request)
     {
-        $data = json_decode(Input::post("data"), true);
+        $data = json_decode($request->input("data"), true);
 
         $slide = Slides::find($id);
 

@@ -7,7 +7,6 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
 use App\Mail\Contactenos;
 use App\Mail\Recover;
 use Illuminate\Support\Facades\Mail;
@@ -30,8 +29,7 @@ class UsersController extends BaseController
     //Create a new user
     public function create(Request $req): array
     {
-        //$userR=json_decode($r->getContent(), true);
-        $userR = json_decode(Input::post("data"), true);
+        $userR = json_decode($req->input("data"), true);
         $image = $req->file('image');
         $inDb = User::where("identification_number", $userR['identification_number'])
             ->orWhere("email", $userR['email'])->count();
@@ -72,9 +70,8 @@ class UsersController extends BaseController
 
     public function update($id, Request $r): array
     {
-        //$userR = json_decode($r->getContent(), true);
         $user = User::find($id);
-        $userR = json_decode(Input::post("data"), true);
+        $userR = json_decode($r->input("data"), true);
         $image = $r->file('image');
         $save = true;
         if ($userR != null) {
