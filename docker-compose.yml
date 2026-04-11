@@ -1,8 +1,8 @@
 version: '3'
 services:
   db:
-    image: mysql:8.0.33
-    restart: always
+    image: mysql:8.0.45
+    restart: "no"
     environment:
       MYSQL_ROOT_PASSWORD: mysecretpassword
       MYSQL_DATABASE: conticlub
