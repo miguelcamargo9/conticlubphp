@@ -3,6 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class Cors
 {
@@ -10,19 +12,19 @@ class Cors
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param Request $request
+     * @param Closure $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         if ($request->isMethod('OPTIONS')) {
-            $response = Response::make();
+            $response = response('', 200);
         } else {
             $response = $next($request);
         }
 
-        return $next($request)
+        return $response
             ->header('Access-Control-Allow-Origin', '*')
             ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
             ->header('Access-Control-Allow-Headers', '*');
