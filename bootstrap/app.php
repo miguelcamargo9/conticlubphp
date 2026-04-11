@@ -1,7 +1,14 @@
 <?php
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: *');
-header('Access-Control-Allow-Headers: Origin, X-Requested-With,Authorization, Content-Type, Accept');
+// Legacy belt-and-suspenders CORS headers. The real CORS handling lives in
+// App\Http\Middleware\Cors which is registered in Http/Kernel. These raw
+// header() calls are kept for backwards compatibility with the historical
+// bootstrap behavior, but they are skipped under CLI SAPIs (phpunit, artisan)
+// or when output has already started, where they would otherwise warn/fatal.
+if (PHP_SAPI !== 'cli' && ! headers_sent()) {
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: *');
+    header('Access-Control-Allow-Headers: Origin, X-Requested-With,Authorization, Content-Type, Accept');
+}
 
 /*
 |--------------------------------------------------------------------------

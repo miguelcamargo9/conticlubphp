@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
 
 // Models
 use App\Models\Product;
@@ -22,8 +21,7 @@ class ProductsController extends BaseController
 
     public function create(Request $req)
     {
-        //$infoProduct = json_decode($r->getContent(), true);
-        $infoProduct = json_decode(Input::post("data"), true);
+        $infoProduct = json_decode($req->input("data"), true);
         $images = $req->file('images');
         $mainImage = $req->file('image');
         $idCategory = $infoProduct['product_categories_id'];
@@ -86,8 +84,7 @@ class ProductsController extends BaseController
     //ACTUALIZAR UN PRODUCTO
     public function update($id, Request $req)
     {
-        //$data = json_decode($r->getContent(), true);
-        $data = json_decode(Input::post("data"), true);
+        $data = json_decode($req->input("data"), true);
 
         $product = Product::find($id);
         $idCategory = $product->product_categories_id;

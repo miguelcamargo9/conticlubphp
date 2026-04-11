@@ -6,7 +6,6 @@ use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -24,13 +23,13 @@ class InvoiceController extends BaseController
 {
     public function create(Request $req): array
     {
-        $data = json_decode(Input::post("data"), true);
+        $data = json_decode($req->input("data"), true);
 
         if (isset($data['sale_date']) && $data['sale_date'] < '2023-05-01') {
             return ["message" => "error", "detail" => "La fecha de venta no puede ser menor a mayo de 2023."];
         }
 
-        $tires = json_decode(Input::post("tires"), true);
+        $tires = json_decode($req->input("tires"), true);
         $infoUser = $req->user();
         $idUser = $infoUser->id;
         $idSubsidiary = $infoUser->subsidiary_id;
