@@ -1,4 +1,4 @@
-FROM php:7.2-fpm
+FROM php:7.4-fpm
 
 RUN apt-get update && apt-get install -y \
     git \
@@ -10,7 +10,6 @@ RUN apt-get update && apt-get install -y \
     libbz2-dev \
     libpng-dev \
     libjpeg-dev \
-    libmcrypt-dev \
     libreadline-dev \
     libfreetype6-dev
 
