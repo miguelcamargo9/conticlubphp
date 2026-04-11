@@ -8,7 +8,7 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.4",
+        "php": "^7.2.5",
         "aws/aws-sdk-php": "^3.276 <3.324",
         "fideloper/proxy": "^4.2",
         "laravel/framework": "^6.0",
