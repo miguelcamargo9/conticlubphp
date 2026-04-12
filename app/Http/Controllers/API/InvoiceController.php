@@ -127,9 +127,28 @@ class InvoiceController extends BaseController
             ["message" => "error"];
     }
 
-    public function all()
+    public function all(Request $req)
     {
-        return Invoice::with("user:id,name")->with("invoiceReferences.tire.design.brand")->with("points")->get();
+        $perPage = (int) $req->query('per_page', 15);
+        $perPage = max(1, min($perPage, 100));
+
+        $query = Invoice::with("user:id,name")
+            ->with("invoiceReferences.tire.design.brand")
+            ->with("points")
+            ->orderBy('created_at', 'desc');
+
+        $search = $req->query('search');
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('number', 'like', "%{$search}%")
+                  ->orWhere('state', 'like', "%{$search}%")
+                  ->orWhereHas('user', function ($q2) use ($search) {
+                      $q2->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        return $query->paginate($perPage);
     }
 
     //Get an existing invoice

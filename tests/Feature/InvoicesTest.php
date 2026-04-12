@@ -34,7 +34,7 @@ class InvoicesTest extends TestCase
         return [$user, $tpbp];
     }
 
-    public function testListReturnsInvoicesWithReferencesAndPoints(): void
+    public function testListReturnsPaginatedInvoices(): void
     {
         $user = User::where('state', '1')->firstOrFail();
         Passport::actingAs($user);
@@ -42,7 +42,71 @@ class InvoicesTest extends TestCase
         $response = $this->getJson('/api/invoice/all');
 
         $response->assertStatus(200);
-        $this->assertIsArray($response->json());
+        $response->assertJsonStructure([
+            'current_page',
+            'data',
+            'last_page',
+            'per_page',
+            'total',
+        ]);
+    }
+
+    public function testListRespectsPerPageParameter(): void
+    {
+        $user = User::where('state', '1')->firstOrFail();
+        Passport::actingAs($user);
+
+        $response = $this->getJson('/api/invoice/all?per_page=5');
+
+        $response->assertStatus(200);
+        $json = $response->json();
+        $this->assertSame(5, $json['per_page']);
+        $this->assertLessThanOrEqual(5, count($json['data']));
+    }
+
+    public function testListCapsPerPageAt100(): void
+    {
+        $user = User::where('state', '1')->firstOrFail();
+        Passport::actingAs($user);
+
+        $response = $this->getJson('/api/invoice/all?per_page=500');
+
+        $response->assertStatus(200);
+        $this->assertSame(100, $response->json('per_page'));
+    }
+
+    public function testListSupportsPageNavigation(): void
+    {
+        $user = User::where('state', '1')->firstOrFail();
+        Passport::actingAs($user);
+
+        $response = $this->getJson('/api/invoice/all?per_page=1&page=1');
+        $response->assertStatus(200);
+        $page1 = $response->json();
+        $this->assertSame(1, $page1['current_page']);
+
+        if ($page1['last_page'] > 1) {
+            $response2 = $this->getJson('/api/invoice/all?per_page=1&page=2');
+            $response2->assertStatus(200);
+            $this->assertSame(2, $response2->json('current_page'));
+        }
+    }
+
+    public function testListFiltersbySearch(): void
+    {
+        $user = User::where('state', '1')->firstOrFail();
+        Passport::actingAs($user);
+
+        $response = $this->getJson('/api/invoice/all?search=Aprobada');
+
+        $response->assertStatus(200);
+        $data = $response->json('data');
+        foreach ($data as $invoice) {
+            $matchesState = stripos($invoice['state'], 'Aprobada') !== false;
+            $matchesNumber = stripos((string) $invoice['number'], 'Aprobada') !== false;
+            $matchesUser = isset($invoice['user']['name']) && stripos($invoice['user']['name'], 'Aprobada') !== false;
+            $this->assertTrue($matchesState || $matchesNumber || $matchesUser);
+        }
     }
 
     public function testCreateUploadsImageAndAwardsPointsBasedOnTireProfile(): void
