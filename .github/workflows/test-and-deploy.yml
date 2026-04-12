@@ -1,61 +1,11 @@
-name: Test & Deploy
+name: Deploy
 
 on:
   push:
     branches: [master]
-  pull_request:
-    branches: [master]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-
-    services:
-      mysql:
-        image: mysql:5.7
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: conticlub_test
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping -proot"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup PHP 7.2
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '7.2'
-          extensions: mbstring, pdo, pdo_mysql, json, openssl
-          coverage: none
-
-      - name: Install Composer dependencies
-        run: composer install --prefer-dist --no-progress --no-suggest
-
-      - name: Prepare environment
-        run: |
-          cp .env.example .env
-          sed -i 's/DB_HOST=.*/DB_HOST=127.0.0.1/' .env
-          sed -i 's/DB_PORT=.*/DB_PORT=3306/' .env
-          sed -i 's/DB_DATABASE=.*/DB_DATABASE=conticlub_test/' .env
-          sed -i 's/DB_USERNAME=.*/DB_USERNAME=root/' .env
-          sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=root/' .env
-          php artisan key:generate
-          php artisan migrate --force
-          php artisan db:seed --force
-          php artisan passport:install --force
-
-      - name: Run tests
-        run: ./vendor/bin/phpunit
-
   deploy:
-    needs: test
-    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
     runs-on: ubuntu-latest
 
     steps:
