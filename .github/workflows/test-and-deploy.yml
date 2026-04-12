@@ -16,6 +16,7 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: conticlub_test
+          MYSQL_NATIVE_PASSWORD: "ON"
         ports:
           - 3306:3306
         options: >-
@@ -23,6 +24,7 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
+          --entrypoint "docker-entrypoint.sh mysqld --mysql-native-password=ON"
 
     steps:
       - uses: actions/checkout@v4
