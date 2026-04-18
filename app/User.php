@@ -44,6 +44,8 @@ class User extends Authenticate
     protected $fillable = ['profiles_id', 'cities_id', 'name', 'nickname', 'email', 'identification_number',
         'identification_type', 'state', 'points'];
 
+    protected $hidden = ['password', 'remember_token'];
+
     public function findForPassport($username)
     {
         //dd(bcrypt("1234"));
