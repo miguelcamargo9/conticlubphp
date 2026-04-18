@@ -18,7 +18,7 @@ documents intentionally overlap so each stands on its own.
 | Language  | **PHP 7.2.34** (production runtime)                                                             |
 | Framework | Laravel 6.x                                                                                     |
 | Auth      | Laravel Passport 9.x (OAuth2 password grant)                                                    |
-| Database  | MySQL 8.0.45 (AWS RDS in prod, `mysql:8.0.45` container locally)                                |
+| Database  | MySQL 8.4.8 LTS (AWS RDS in prod, `mysql:8.4` container locally) — upgraded from 8.0.45 on 2026-04-12 |
 | Storage   | AWS S3 via `league/flysystem-aws-s3-v3` for invoice images                                      |
 | HTTP      | Nginx + PHP-FPM (see `docker-compose.yml` / `Dockerfile` / `nginx_config.conf`)                 |
 
